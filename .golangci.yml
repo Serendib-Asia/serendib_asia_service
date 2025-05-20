@@ -1,0 +1,247 @@
+linters-settings:
+  dupl:
+    threshold: 100
+  depguard:
+    rules:
+      main:
+        allow:
+          - $gostd
+          - gorm.io
+          - golang.org/x
+          - go.uber.org/zap
+          - github.com/gofiber
+          - github.com/google
+          - github.com/pkg/errors
+          - github.com/spf13/viper
+          - github.com/valyala/fasthttp
+          - github.com/golangci/golangci-lint
+          - gopkg.in/natefinch/lumberjack.v2
+          - project-template
+          - github.com/swaggo/fiber-swagger
+          - github.com/stretchr/testify
+          - gopkg.in/DATA-DOG/go-sqlmock.v1
+          - github.com/go-playground
+          - github.com/atsushinee/go-markdown-generator
+          - github.com/tidwall
+          - github.com/snabb/isoweek
+          - github.com/golang-jwt/jwt/v5
+  funlen:
+    lines: -1
+    statements: 50
+  goconst:
+    min-len: 2
+    min-occurrences: 3
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+    disabled-checks:
+      - commentedOutCode
+      - appendAssign
+      - hugeParam
+  gocyclo:
+    min-complexity: 15
+  gofmt:
+    rewrite-rules:
+      - pattern: "interface{}"
+        replacement: "any"
+  goimports:
+    local-prefixes: github.com/golangci/golangci-lint
+  mnd:
+    checks:
+      - argument
+      - case
+      - condition
+      - return
+    ignored-numbers:
+      - "0"
+      - "1"
+      - "2"
+      - "3"
+    ignored-functions:
+      - strings.SplitN
+  govet:
+    settings:
+      printf:
+        funcs:
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+    enable:
+      - nilness
+      - shadow
+  errorlint:
+    asserts: false
+  lll:
+    line-length: 200
+  misspell:
+    locale: US
+  nolintlint:
+    allow-unused: false # report any unused nolint directives
+    require-explanation: false # don't require an explanation for nolint directives
+    require-specific: false # don't require nolint directives to be specific about which linter is being skipped
+  revive:
+    rules:
+      - name: unexported-return
+        disabled: true
+      - name: unused-parameter
+  wsl:
+    force-err-cuddling: false
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - depguard
+    - dogsled
+    - decorder
+    - errcheck
+    - errorlint
+    - copyloopvar
+    - funlen
+    - gocheckcompilerdirectives
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - mnd # magic numbers
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - lll
+    - misspell
+    - nakedret
+    - nilnil
+    - noctx
+    - nolintlint
+    - revive
+    - staticcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
+
+issues:
+  # Excluding configuration per-path, per-linter, per-text and per-source
+  exclude-rules:
+    - path: cmd/icx_dashboard/icx_dashboard.go
+      linters:
+        - gochecknoinits
+    - path: cmd/icx_dashboard_doc/icx_dashboard_doc.go
+      linters:
+        - gochecknoinits
+    - path: pkg/web/middleware/http.go
+      linters:
+        - revive
+    - path: pkg/config/config.go
+      linters:
+        - errcheck
+        - stylecheck
+    - path: pkg/config/appconfig/app_config.go
+      linters:
+        - errcheck
+    - path: pkg/utils/constant/..
+      linters:
+        - gosec
+    - path: app/routes/handler/validator/generic_validator.go
+      linters:
+        - errcheck
+        - govet
+    - path: test/query.go
+      linters:
+        - lll
+    - path: app/services/service_constant.go
+      linters:
+        - gosec
+        - lll
+    - path: pkg/config/config.go
+      linters:
+        - lll
+    - path: pkg/config/dbconfig/db_config.go
+      linters:
+        - gocritic
+    - path: app/services/tickets_service.go
+      linters:
+        - gosimple
+    - path: app/routes/api_routes.go
+      linters:
+        - funlen
+    - path: app/services/client_service.go
+      linters:
+        - gocritic
+        - govet
+        - staticcheck
+    - path: pkg/config/config.go
+      linters:
+        - gosec
+    - path: app/repository/sdesk_impl/incident_repository.go
+      linters:
+        - revive
+    - path: app/repository/base_impl/master_data_repository.go
+      linters:
+        - revive
+    - path: app/repository/base_impl/instance_repository.go
+      linters:
+        - revive
+    - path: app/repository/base_impl/client_repository.go
+      linters:
+        - revive
+    - path: app/repository/base_impl/agent_repository.go
+      linters:
+        - revive
+    - path: app/repository/sdesk_impl/base_queries.go
+      linters:
+        - unused
+    - path: app/repository/sdesk_impl/repository_bootstrap.go
+      linters:
+        - unused
+    - path: app/repository/sdesk_impl/customer_insight_repository.go
+      linters:
+        - unused
+    - path: test/mock_db_test.go
+      linters:
+        - staticcheck
+    - path: app/services/alert_service.go
+      linters:
+        - gosec
+    - path: app/services/customer_insight_service.go
+      linters:
+        - gosec
+    - path: app/repository/sdesk_impl/customer_insight_repository.go
+      linters:
+        - unused
+    - path: app/repository/base_impl/incident_repository.go
+      linters:
+        - revive
+    - path: app/repository/base_impl/tickets_repository.go
+      linters:
+        - revive
+    - path: app/repository/base_impl/metrics_repository.go
+      linters:
+        - revive
+    - path: app/services/incident_service
+      linters:
+        - revive
+    - path: app/repository/base_impl/customer_insight_repository.go
+      linters:
+        - revive
+    - path: app/repository/sdesk_impl/customer_insight_repository.go
+      linters:
+        - revive
+    - path: app/repository/sdesk_impl/sentiment_repository.go
+      linters:
+        - revive
+    - path: app/repository/base_impl/sentiment_repository.go
+      linters:
+        - revive
+run:
+  timeout: 5m

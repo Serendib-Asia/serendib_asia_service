@@ -1,0 +1,121 @@
+# enable Docker for your repository
+options:
+  docker: true
+  max-time: 60
+
+definitions:
+  scripts:
+    - &update-env |
+      if [[ $BITBUCKET_BRANCH == "develop" ]]; then 
+        export STAGE="qa1"; 
+        export DB_HOST=$DB_HOST_QA1;
+        export DB_NAME=$DB_NAME_QA1;
+        export AUTH_SERVER_BASE_URL=$AUTH_SERVER_BASE_URL_QA1;
+      elif [[ $BITBUCKET_BRANCH == "main" ]]; then 
+        export STAGE="non-prod";
+        export DB_HOST=$DB_HOST_NONPROD;
+        export DB_NAME=$DB_NAME_NONPROD;
+        export AUTH_SERVER_BASE_URL=$AUTH_SERVER_BASE_URL_NONPROD;
+      else 
+        export STAGE="dit1";
+        export DB_HOST=$DB_HOST_DIT1;
+        export DB_NAME=$DB_NAME_DIT1;
+        export AUTH_SERVER_BASE_URL=$AUTH_SERVER_BASE_URL_DIT1;
+      fi        
+       
+      export IMAGE_TAG=$BITBUCKET_BUILD_NUMBER;
+      export SERVICE_NAME="${SERVICE_NAME}-${STAGE}";
+      export IMAGE="${GCP_REGISTRY}/${IMAGE_NAME}:$IMAGE_TAG";
+
+      echo $IMAGE;
+      echo $GCP_SA_KEY > key.json;
+      export DEFAULT_CLIENT="sdesk";
+      export IS_CLOUD_SQL=$IS_CLOUD_SQL;
+    - &linter-checks |
+      go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+      golangci-lint run
+    - &docker-build |
+      export DOCKER_BUILDKIT=1  # Enable BuildKit
+      docker build -t ${IMAGE} -f ./Dockerfile .
+      docker images
+    - &gcp-auth |
+      gcloud auth activate-service-account --key-file=key.json
+      gcloud config set project $GCP_PROJECT
+    - &upload-to-gcr |
+      echo ${GCP_SA_KEY} | docker login -u _json_key --password-stdin $GCP_REGISTRY
+      docker push ${IMAGE}
+    - &deploy-gcloud-run |
+      gcloud run deploy $SERVICE_NAME \
+      --region $GCP_REGION \
+      --image $IMAGE \
+      --service-account $GCP_SA \
+      --set-cloudsql-instances=$CLOUD_SQL_INSTANCE \
+      --allow-unauthenticated \
+      --platform=managed \
+      --update-env-vars \
+      DB_HOST=$DB_HOST,\
+      DB_PORT=$DB_PORT,\
+      DB_NAME=$DB_NAME,\
+      DB_USER=$DB_USER,\
+      DB_PASSWORD=$DB_PASSWORD,\
+      IS_CLOUD_SQL=$IS_CLOUD_SQL,\
+      AUTH_SERVER_BASE_URL=$AUTH_SERVER_BASE_URL,\
+      TOKEN_VALIDATE_ENDPOINT=$TOKEN_VALIDATE_ENDPOINT,\
+      DEFAULT_CLIENT=$DEFAULT_CLIENT
+    - &unit_test |
+      go test -v ./test/...
+    - &unit_test_coverage |
+      chmod +x check_coverage.sh
+      ./check_coverage.sh
+  steps:
+    - step: &linter-check
+        name: Linter Check
+        image: golang:1.22-bullseye
+        caches:
+          - docker
+        script:
+          - *update-env
+          - *linter-checks
+    - step: &unit-test
+        name: Unit Test
+        image: golang:1.22-bullseye
+        script:
+          - *unit_test
+    - step: &unit-test-coverage
+        name: Unit Test Coverage
+        image: golang:1.22-bullseye
+        script:
+          - *unit_test_coverage
+    - step: &build-and-upload
+        name: Build and upload
+        caches:
+          - docker
+        services:
+          - docker
+        script:
+          - *update-env
+          - *docker-build
+          - *upload-to-gcr
+    - step: &deploy
+        name: Deploy
+        image: google/cloud-sdk:latest
+        caches:
+          - docker
+        services:
+          - docker
+        script:
+          - *update-env
+          - *gcp-auth
+          - *deploy-gcloud-run
+
+pipelines:
+  pull-requests:
+    "**":
+      - step: *linter-check
+      - step: *unit-test
+      - step: *unit-test-coverage
+      - step: *build-and-upload
+      - step: *deploy
+  # default:
+  #   - step: *build-and-upload
+  #   - step: *deploy
