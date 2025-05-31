@@ -4,7 +4,6 @@ package dbconfig
 const (
 	initDBMethod                   = "initDB"
 	initDefaultDBMethod            = "initDefaultDB"
-	initSDeskDBMethod              = "initSDeskDB"
 	InitDBConnectionMethod         = "InitDBConnection"
 	InitDBConWithAutoMigrateMethod = "InitDBConWithAutoMigrate"
 )

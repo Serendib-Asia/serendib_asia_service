@@ -21,21 +21,10 @@ var (
 
 // configuration constance
 const (
-	SrvListenPort                     = "SRV_LISTEN_PORT"
-	ChildFiberProcessIdleTimeout      = "CHILD_FIBER_PROCESS_IDLE_TIMEOUT"
-	LogDestination                    = "LOG_DESTINATION"
-	AllowedPriorities                 = "ALLOWED_PRIORITIES"
-	AuthServerBaseURL                 = "AUTH_SERVER_BASE_URL"
-	AiMlServiceBaseURL                = "AI_ML_SERVICE_BASE_URL"
-	AuthServerAllUsersDetailsEndpoint = "SEC_SRV_GET_ALL_USER_DETAILS_ENDPOINT"
-	AuthServerTokenValidateEndpoint   = "TOKEN_VALIDATE_ENDPOINT"
-	AuthServerUserDetailsEndpoint     = "USER_DETAILS_ENDPOINT"
-	AiMlServiceCodeGenEndpoint        = "CODE_GENERATION_ENDPOINT"
-	ICX_APP                           = "TENANT_NAME"
-	SDeskTicketBaseURL                = "SDESK_BASE_URL"
-	DefaultTicketBaseURL              = "DEFAULT_BASE_URL"
-	DefaultClient                     = "DEFAULT_CLIENT"
-	SDeskClient                       = "SDESK"
+	SrvListenPort                = "SRV_LISTEN_PORT"
+	ChildFiberProcessIdleTimeout = "CHILD_FIBER_PROCESS_IDLE_TIMEOUT"
+	LogDestination               = "LOG_DESTINATION"
+	AllowedPriorities            = "ALLOWED_PRIORITIES"
 	// log constance
 	LogFileName                 = "LOG_FILE_NAME"
 	LogMaxSizeMb                = "LOG_MAX_SIZE_MB"
@@ -53,14 +42,6 @@ const (
 	DBPassword = "DB_PASSWORD"
 	DBSSLMode  = "DB_SSLMODE"
 	ISCloudSQL = "IS_CLOUD_SQL"
-
-	// client db
-	ClientDBHost     = "CLIENT_DB_HOST"
-	ClientDBPort     = "CLIENT_DB_PORT"
-	ClientDBName     = "CLIENT_DB_NAME"
-	ClientDBUser     = "CLIENT_DB_USER"
-	ClientDBPassword = "CLIENT_DB_PASSWORD"
-	ClientDBSSLMode  = "CLIENT_DB_SSLMODE"
 
 	// log constance values
 	Console = "console"
@@ -86,22 +67,10 @@ type CommonConfig struct {
 	_ struct{}
 	LogConfig
 	DBConfig
-	ClientDBConfig                    DBConfig
-	SrvListenPort                     string
-	ChildFiberProcessIdleTimeout      time.Duration
-	Pprofenabled                      bool
-	AllowedPriorities                 []string
-	AuthServerBaseURL                 string
-	AiMlServiceBaseURL                string
-	AuthServerAllUsersDetailsEndpoint string
-	AuthServerTokenValidateEndpoint   string
-	AuthServerUserDetailsEndpoint     string
-	AiMlServiceCodeGenEndpoint        string
-	ICX_APP                           string
-	SDeskTicketBaseURL                string
-	DefaultTicketBaseURL              string
-	DefaultClient                     string
-	SDeskClient                       string
+	ChildFiberProcessIdleTimeout time.Duration
+	SrvListenPort                string
+	Pprofenabled                 bool
+	AllowedPriorities            []string
 }
 
 // LogConfig is a struct that holds the log configuration for the application
@@ -160,37 +129,16 @@ func (config *CommonConfig) setDefaultConfig() {
 	viper.SetDefault(LogFileName, JSON)
 	viper.SetDefault(Pprofenabled, "true")
 	viper.SetDefault(AllowedPriorities, DefaultAllowedPriorities)
-	viper.SetDefault(AuthServerBaseURL, "http://localhost:8081")
-	viper.SetDefault(AiMlServiceBaseURL, "https://icx-ai-ml-non-prod-fhhapl7sza-uc.a.run.app")
-	viper.SetDefault(AuthServerAllUsersDetailsEndpoint, "/icx/auth/v1/users")
-	viper.SetDefault(AuthServerTokenValidateEndpoint, "/icx/auth/v1/validate/token/icx-dashboard")
-	viper.SetDefault(AuthServerUserDetailsEndpoint, "/icx/auth/v1/user")
-	viper.SetDefault(AiMlServiceCodeGenEndpoint, "/code-generate")
-	viper.SetDefault(ICX_APP, "icx-dashboard")
-
-	viper.SetDefault(SDeskTicketBaseURL, "https://testinstance.uat.sdesk.co.uk/")
-	viper.SetDefault(DefaultTicketBaseURL, "https://testinstance.uat.sdesk.co.uk/")
-	viper.SetDefault(DefaultClient, "")
-	viper.SetDefault(SDeskClient, "sdesk")
 }
 
 func (config *CommonConfig) setDefaultDBConfig() {
 	viper.SetDefault(DBHost, "localhost")
 	viper.SetDefault(DBPort, "5432")
-	viper.SetDefault(DBName, "icx_dashboard_db")
+	viper.SetDefault(DBName, "serendib")
 	viper.SetDefault(DBUser, "postgres")
 	viper.SetDefault(DBPassword, "postgres")
 	viper.SetDefault(DBSSLMode, "disable")
 	viper.SetDefault(ISCloudSQL, false)
-}
-
-func (config *CommonConfig) setClientDBConfig() {
-	viper.SetDefault(ClientDBHost, "34.141.37.153")
-	viper.SetDefault(ClientDBPort, "3306")
-	viper.SetDefault(ClientDBName, "sdesk")
-	viper.SetDefault(ClientDBUser, "sdesk_db")
-	viper.SetDefault(ClientDBPassword, "P00074950d")
-	viper.SetDefault(ClientDBSSLMode, true)
 }
 
 // BuildConfig is using to build the application configuration
@@ -199,30 +147,17 @@ func (config *CommonConfig) BuildConfig() *CommonConfig {
 
 	// Call the SetDBDefaultConfig function
 	config.setDefaultDBConfig()
-	config.setClientDBConfig()
 
 	viper.AutomaticEnv()
 	logConfig, logger := config.getLogConfig()
 
 	config = &CommonConfig{
-		LogConfig:                         logConfig,
-		DBConfig:                          config.getDBConfig(),
-		ClientDBConfig:                    config.getClientDBConfig(),
-		ChildFiberProcessIdleTimeout:      viper.GetDuration(ChildFiberProcessIdleTimeout),
-		SrvListenPort:                     viper.GetString(SrvListenPort),
-		Pprofenabled:                      viper.GetBool(Pprofenabled),
-		AllowedPriorities:                 viper.GetStringSlice(AllowedPriorities),
-		AuthServerBaseURL:                 viper.GetString(AuthServerBaseURL),
-		AiMlServiceBaseURL:                viper.GetString(AiMlServiceBaseURL),
-		AuthServerAllUsersDetailsEndpoint: viper.GetString(AuthServerAllUsersDetailsEndpoint),
-		AuthServerTokenValidateEndpoint:   viper.GetString(AuthServerTokenValidateEndpoint),
-		AuthServerUserDetailsEndpoint:     viper.GetString(AuthServerUserDetailsEndpoint),
-		AiMlServiceCodeGenEndpoint:        viper.GetString(AiMlServiceCodeGenEndpoint),
-		ICX_APP:                           viper.GetString(ICX_APP),
-		SDeskTicketBaseURL:                viper.GetString(SDeskTicketBaseURL),
-		DefaultTicketBaseURL:              viper.GetString(DefaultTicketBaseURL),
-		DefaultClient:                     viper.GetString(DefaultClient),
-		SDeskClient:                       viper.GetString(SDeskClient),
+		LogConfig:                    logConfig,
+		DBConfig:                     config.getDBConfig(),
+		ChildFiberProcessIdleTimeout: viper.GetDuration(ChildFiberProcessIdleTimeout),
+		SrvListenPort:                viper.GetString(SrvListenPort),
+		Pprofenabled:                 viper.GetBool(Pprofenabled),
+		AllowedPriorities:            viper.GetStringSlice(AllowedPriorities),
 	}
 
 	configJSONPresntation, _ := json.Marshal(config)
@@ -243,19 +178,6 @@ func (config *CommonConfig) getDBConfig() DBConfig {
 		DBUser:     viper.GetString(DBUser),
 		DBPassword: viper.GetString(DBPassword),
 		DBSSLMode:  viper.GetString(DBSSLMode),
-		ISCloudSQL: viper.GetBool(ISCloudSQL),
-	}
-}
-
-func (config *CommonConfig) getClientDBConfig() DBConfig {
-	return DBConfig{
-		DBType:     MYSQL,
-		DBHost:     viper.GetString(ClientDBHost),
-		DBPort:     viper.GetString(ClientDBPort),
-		DBName:     viper.GetString(ClientDBName),
-		DBUser:     viper.GetString(ClientDBUser),
-		DBPassword: viper.GetString(ClientDBPassword),
-		DBSSLMode:  viper.GetString(ClientDBSSLMode),
 		ISCloudSQL: viper.GetBool(ISCloudSQL),
 	}
 }

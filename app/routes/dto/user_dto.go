@@ -6,10 +6,11 @@ import (
 
 // UserRegisterRequest represents the request to register a new user
 type UserRegisterRequest struct {
-	FullName    string `json:"full_name" validate:"required,max=100"`
-	Email       string `json:"email" validate:"required,email,max=100"`
-	Password    string `json:"password" validate:"required,min=8"`
-	PhoneNumber string `json:"phone_number" validate:"max=15"`
+	Email        string `json:"email" validate:"required,email,max=100"`
+	Password     string `json:"password" validate:"required,min=8"`
+	Name         string `json:"name" validate:"required,max=100"`
+	PhoneNumber  string `json:"phone_number" validate:"omitempty,max=15"`
+	ProfileImage string `json:"profile_image"`
 }
 
 // UserLoginRequest represents the request to login a user
@@ -29,15 +30,15 @@ type UserProfileResponse struct {
 	ID           uint      `json:"id"`
 	FullName     string    `json:"full_name"`
 	Email        string    `json:"email"`
-	PhoneNumber  string    `json:"phone_number"`
-	ProfileImage string    `json:"profile_image"`
+	PhoneNumber  string    `json:"phone_number,omitempty"`
+	ProfileImage string    `json:"profile_image,omitempty"`
 	CreatedAt    time.Time `json:"created_at"`
 }
 
 // UserUpdateProfileRequest represents the request to update a user's profile
 type UserUpdateProfileRequest struct {
 	FullName     string `json:"full_name" validate:"required,max=100"`
-	PhoneNumber  string `json:"phone_number" validate:"max=15"`
+	PhoneNumber  string `json:"phone_number" validate:"omitempty,max=15"`
 	ProfileImage string `json:"profile_image"`
 }
 

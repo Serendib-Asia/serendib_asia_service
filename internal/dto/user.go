@@ -12,3 +12,8 @@ type User struct {
 	ProfileImage string    `gorm:"type:text" json:"profile_image"`
 	CreatedAt    time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 }
+
+// TableName specifies the table name for the User model
+func (User) TableName() string {
+	return "users"
+}

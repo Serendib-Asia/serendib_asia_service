@@ -37,10 +37,6 @@ const (
 )
 
 const (
-	SDesk = "sdesk"
-)
-
-const (
 	// Bootstrap repository methods
 	GetEnumValuesMethod = "GetEnumValues"
 
@@ -159,7 +155,6 @@ const (
 	FindUserChurnRiskSentimentScoreMethod          = "FindUserChurnRiskSentimentScore"
 
 	// Customer insights repository methods
-	FindTicketSummaryMethod                  = "FindTicketSummary"
 	FindCustomerScoreIndicatorMethod         = "FindCustomerScoreIndicator"
 	FindInternalCustomerScoreIndicatorMethod = "FindInternalCustomerScoreIndicator"
 	FindNumberOfUserAccountsForClientMethod  = "FindNumberOfUserAccountsForClient"
@@ -175,7 +170,6 @@ const (
 	GetNotesCountMethod                      = "GetNotesCount"
 	GetCasesCountMethod                      = "GetCasesCount"
 	GetIncidentsCountMethod                  = "GetIncidentsCount"
-	FindEscalatedTicketsCountMethod          = "FindEscalatedTicketsCount"
 	// private
 	GetPeriodFieldMethod = "getPeriodField"
 

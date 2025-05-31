@@ -11,7 +11,11 @@ import (
 	"go.uber.org/zap"
 )
 
-// ValidateCommonRequest used to validate icx common req
+// Common request validator
+// This package contains common request validation functions
+// It provides validation for common request fields and structures
+
+// ValidateCommonRequest used to validate common request parameters
 func ValidateCommonRequest(requestID string, ctx *fiber.Ctx) (dto.CommonFilterRequest, *custom.ErrorResult) {
 	commonLogFields := log.CommonLogField(requestID)
 	log.Logger.Debug(log.TraceMsgFuncStart(ValidateCommonRequestMethod), commonLogFields...)

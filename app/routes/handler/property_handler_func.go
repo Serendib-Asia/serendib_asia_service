@@ -28,7 +28,7 @@ const (
 // @Accept json
 // @Produce json
 // @Param property body dto.PropertyRequest true "Property details"
-// @Success 200 {object} dto.PropertyResponse
+// @Success 200 {object} dto.Property
 // @Failure 400 {object} custom.ErrorResult
 // @Failure 500 {object} custom.ErrorResult
 // @Router /api/properties [post]
@@ -43,7 +43,7 @@ func HandleCreateProperty(ctx *fiber.Ctx) error {
 		errorResult     *custom.ErrorResult
 		errRes          custom.ErrorResult
 		request         dto.PropertyRequest
-		response        dto.PropertyResponse
+		response        *dto.PropertyResponse
 		propertyService = services.CreatePropertyService(requestID, nil)
 	)
 

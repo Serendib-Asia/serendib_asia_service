@@ -44,51 +44,115 @@ const (
 
 // Error codes
 const (
-	UnexpectedErrorCode            = "ICX0000"
-	BindingErrorCode               = "ICX0001"
-	MissingRequiredFieldErrorCode  = "ICX0002"
-	MissingRequireWithoutFieldCode = "ICX0003"
-	MissingRequireWithFieldCode    = "ICX0004"
-	MinLengthFieldCode             = "ICX0005"
-	MaxLengthFieldCode             = "ICX0006"
-	GreaterValueFieldCode          = "ICX0007"
-	PatternErrorCode               = "ICX0008"
-	TestConnectionFilCode          = "ICX0009"
-	// Auth error codes
-	ErrEmptyAuthHeaderCode   = "ICX0010"
-	ErrInvalidAuthHeaderCode = "ICX0011"
-	// DB error codes
-	ErrRecordNotFoundCode   = "ICX0012"
-	ErrDatabaseCode         = "ICX0013"
-	ErrBeginTransactionCode = "ICX0014"
-	// Parse error codes
-	ErrStringToUintParseCode = "ICX0015"
-	ErrDateParseCode         = "ICX0016"
-	ErrDateCompareCode       = "ICX0017"
-	ErrRequestParseCode      = "ICX0018"
-	ErrHTTPRequestCode       = "ICX0019"
-	// bootstrap error
-	ErrTokenSplitToArrayCode = "ICX0020"
-	ErrDataUnmarshalCode     = "ICX0021"
-	ErrDataMarshalCode       = "ICX0022"
-	// access token error codes
-	ErrAccessTokenCode = "ICX0023"
-	ErrDataCastingCode = "ICX0024"
-	// Escalation error codes
-	ErrFieldsMustBeTrueOrFalseCode = "ICX0022"
-	ErrFieldsCannotBeNegativeCode  = "ICX0023"
-	// Agent error codes
-	ErrWeekValidateCode   = "ICX0024"
-	ErrYearValidationCode = "ICX0025"
-	ErrTenantNotFoundCode = "ICX0026"
-	// Sentiment score request error code
-	ErrEmptyCategoriesCode = "ICX0027"
-	// Service error codes
-	ErrServiceCode = "ICX0028"
-	// Parse error codes (cont.)
-	ErrIntToUintParseCode   = "ICX0029"
-	ErrIntToStringParseCode = "ICX0030"
-	ErrStringToIntParseCode = "ICX0031"
+	// General error codes
+	ErrCodeInvalidRequest            = "INVALID_REQUEST"
+	ErrCodeUnauthorized              = "UNAUTHORIZED"
+	ErrCodeForbidden                 = "FORBIDDEN"
+	ErrCodeNotFound                  = "NOT_FOUND"
+	ErrCodeInternalServerError       = "INTERNAL_SERVER_ERROR"
+	ErrCodeBadGateway                = "BAD_GATEWAY"
+	ErrCodeServiceUnavailable        = "SERVICE_UNAVAILABLE"
+	ErrCodeGatewayTimeout            = "GATEWAY_TIMEOUT"
+	ErrCodeValidationError           = "VALIDATION_ERROR"
+	ErrCodeDatabaseError             = "DATABASE_ERROR"
+	ErrCodeExternalServiceError      = "EXTERNAL_SERVICE_ERROR"
+	ErrCodeAuthenticationError       = "AUTHENTICATION_ERROR"
+	ErrCodeAuthorizationError        = "AUTHORIZATION_ERROR"
+	ErrCodeResourceNotFound          = "RESOURCE_NOT_FOUND"
+	ErrCodeDuplicateResource         = "DUPLICATE_RESOURCE"
+	ErrCodeInvalidInput              = "INVALID_INPUT"
+	ErrCodeTimeout                   = "TIMEOUT"
+	ErrCodeRateLimitExceeded         = "RATE_LIMIT_EXCEEDED"
+	ErrCodeInvalidToken              = "INVALID_TOKEN"
+	ErrCodeTokenExpired              = "TOKEN_EXPIRED"
+	ErrCodeInvalidCredentials        = "INVALID_CREDENTIALS"
+	ErrCodeAccountLocked             = "ACCOUNT_LOCKED"
+	ErrCodeAccountDisabled           = "ACCOUNT_DISABLED"
+	ErrCodeAccountExpired            = "ACCOUNT_EXPIRED"
+	ErrCodeAccountInactive           = "ACCOUNT_INACTIVE"
+	ErrCodeAccountPending            = "ACCOUNT_PENDING"
+	ErrCodeAccountSuspended          = "ACCOUNT_SUSPENDED"
+	ErrCodeAccountTerminated         = "ACCOUNT_TERMINATED"
+	ErrCodeAccountDeleted            = "ACCOUNT_DELETED"
+	ErrCodeAccountNotFound           = "ACCOUNT_NOT_FOUND"
+	ErrCodeAccountAlreadyExists      = "ACCOUNT_ALREADY_EXISTS"
+	ErrCodeAccountInvalid            = "ACCOUNT_INVALID"
+	ErrCodeAccountInvalidState       = "ACCOUNT_INVALID_STATE"
+	ErrCodeAccountInvalidType        = "ACCOUNT_INVALID_TYPE"
+	ErrCodeAccountInvalidRole        = "ACCOUNT_INVALID_ROLE"
+	ErrCodeAccountInvalidPermission  = "ACCOUNT_INVALID_PERMISSION"
+	ErrCodeAccountInvalidAccess      = "ACCOUNT_INVALID_ACCESS"
+	ErrCodeAccountInvalidOperation   = "ACCOUNT_INVALID_OPERATION"
+	ErrCodeAccountInvalidRequest     = "ACCOUNT_INVALID_REQUEST"
+	ErrCodeAccountInvalidResponse    = "ACCOUNT_INVALID_RESPONSE"
+	ErrCodeAccountInvalidData        = "ACCOUNT_INVALID_DATA"
+	ErrCodeAccountInvalidFormat      = "ACCOUNT_INVALID_FORMAT"
+	ErrCodeAccountInvalidValue       = "ACCOUNT_INVALID_VALUE"
+	ErrCodeAccountInvalidParameter   = "ACCOUNT_INVALID_PARAMETER"
+	ErrCodeAccountInvalidArgument    = "ACCOUNT_INVALID_ARGUMENT"
+	ErrCodeAccountInvalidOption      = "ACCOUNT_INVALID_OPTION"
+	ErrCodeAccountInvalidConfig      = "ACCOUNT_INVALID_CONFIG"
+	ErrCodeAccountInvalidSetting     = "ACCOUNT_INVALID_SETTING"
+	ErrCodeAccountInvalidProperty    = "ACCOUNT_INVALID_PROPERTY"
+	ErrCodeAccountInvalidAttribute   = "ACCOUNT_INVALID_ATTRIBUTE"
+	ErrCodeAccountInvalidField       = "ACCOUNT_INVALID_FIELD"
+	ErrCodeAccountInvalidColumn      = "ACCOUNT_INVALID_COLUMN"
+	ErrCodeAccountInvalidTable       = "ACCOUNT_INVALID_TABLE"
+	ErrCodeAccountInvalidDatabase    = "ACCOUNT_INVALID_DATABASE"
+	ErrCodeAccountInvalidSchema      = "ACCOUNT_INVALID_SCHEMA"
+	ErrCodeAccountInvalidQuery       = "ACCOUNT_INVALID_QUERY"
+	ErrCodeAccountInvalidStatement   = "ACCOUNT_INVALID_STATEMENT"
+	ErrCodeAccountInvalidTransaction = "ACCOUNT_INVALID_TRANSACTION"
+	ErrCodeAccountInvalidConnection  = "ACCOUNT_INVALID_CONNECTION"
+	ErrCodeAccountInvalidPool        = "ACCOUNT_INVALID_POOL"
+	ErrCodeAccountInvalidDriver      = "ACCOUNT_INVALID_DRIVER"
+	ErrCodeAccountInvalidProtocol    = "ACCOUNT_INVALID_PROTOCOL"
+	ErrCodeAccountInvalidVersion     = "ACCOUNT_INVALID_VERSION"
+	ErrCodeAccountInvalidEncoding    = "ACCOUNT_INVALID_ENCODING"
+	ErrCodeAccountInvalidCompression = "ACCOUNT_INVALID_COMPRESSION"
+	ErrCodeAccountInvalidEncryption  = "ACCOUNT_INVALID_ENCRYPTION"
+	ErrCodeAccountInvalidHash        = "ACCOUNT_INVALID_HASH"
+	ErrCodeAccountInvalidSignature   = "ACCOUNT_INVALID_SIGNATURE"
+	ErrCodeAccountInvalidCertificate = "ACCOUNT_INVALID_CERTIFICATE"
+	ErrCodeAccountInvalidKey         = "ACCOUNT_INVALID_KEY"
+	ErrCodeAccountInvalidToken       = "ACCOUNT_INVALID_TOKEN"
+	ErrCodeAccountInvalidSession     = "ACCOUNT_INVALID_SESSION"
+	ErrCodeAccountInvalidCookie      = "ACCOUNT_INVALID_COOKIE"
+	ErrCodeAccountInvalidHeader      = "ACCOUNT_INVALID_HEADER"
+
+	// Legacy error codes (for backward compatibility)
+	ErrAccessTokenCode  = "AUTH_001"
+	BindingErrorCode    = "REQ_001"
+	UnexpectedErrorCode = "SYS_001"
+
+	// Add missing error codes for utils and handler usage
+	ErrHTTPRequestCode       = "HTTP_REQUEST_ERROR"
+	ErrStringToUintParseCode = "STRING_TO_UINT_PARSE_ERROR"
+	ErrDateParseCode         = "DATE_PARSE_ERROR"
+	ErrDateCompareCode       = "DATE_COMPARE_ERROR"
+	ErrDataUnmarshalCode     = "DATA_UNMARSHAL_ERROR"
+	ErrDataMarshalCode       = "DATA_MARSHAL_ERROR"
+	ErrWeekValidateCode      = "WEEK_VALIDATE_ERROR"
+	ErrIntToUintParseCode    = "INT_TO_UINT_PARSE_ERROR"
+	ErrIntToStringParseCode  = "INT_TO_STRING_PARSE_ERROR"
+
+	// Validation error codes
+	MissingRequiredFieldErrorCode  = "MISSING_REQUIRED_FIELD"
+	MissingRequireWithoutFieldCode = "MISSING_REQUIRED_WITHOUT_FIELD"
+	MissingRequireWithFieldCode    = "MISSING_REQUIRED_WITH_FIELD"
+	MinLengthFieldCode             = "MIN_LENGTH_FIELD"
+	MaxLengthFieldCode             = "MAX_LENGTH_FIELD"
+	PatternErrorCode               = "PATTERN_ERROR"
+
+	// Service and repository error codes
+	ErrRecordNotFoundCode    = "RECORD_NOT_FOUND"
+	ErrDatabaseCode          = "DATABASE_ERROR"
+	ErrEmptyAuthHeaderCode   = "EMPTY_AUTH_HEADER"
+	ErrTokenSplitToArrayCode = "TOKEN_SPLIT_TO_ARRAY_ERROR"
+
+	// Additional validation error codes
+	ErrYearValidationCode  = "YEAR_VALIDATION_ERROR"
+	ErrEmptyCategoriesCode = "EMPTY_CATEGORIES_ERROR"
 )
 
 // Error messages
@@ -171,7 +235,8 @@ const (
 
 // Util methods
 const (
-	SplitAndDecodeMethod = "SplitAndDecode"
+	AppendToArrayIfNotEmpty = "AppendToArrayIfNotEmpty"
+	SplitAndDecodeMethod    = "SplitAndDecode"
 )
 
 // DB errors for database operations

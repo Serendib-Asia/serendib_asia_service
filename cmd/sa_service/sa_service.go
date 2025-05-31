@@ -30,14 +30,17 @@ func init() {
 // @SecurityDefinitions.api apiKey
 // @Scheme bearer
 // @In header
-// @Name Dashboard
-// @title ICX Dashboard Service
+// @Name Authorization
+// @title Serendib Asia Service
 // @version V1.0
-// @description This is ICX Dashboard Service API's
-// @contact.name ICX Support
-// @contact.email support@ivedha.com
+// @description This is Serendib Asia Service API's
+// @contact.name Serendib Asia Support
+// @contact.email support@serendib.asia
 // @BasePath /api/v1
 // @schemes http https
+// Serendib Asia Service
+// This is the main entry point for the Serendib Asia Service
+// It initializes the configuration, database connection, and starts the API routes
 func main() {
 	appconfig.Start(routes.APIRoutes)
 }

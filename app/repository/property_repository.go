@@ -43,12 +43,74 @@ func CreatePropertyRepository(requestID string) PropertyRepository {
 	}
 }
 
-func (r *propertyRepository) Create(request dto.PropertyRequest) (uint, error) {
+// createPropertyAmenities creates amenities for a property
+func (r *propertyRepository) createPropertyAmenities(tx *gorm.DB, propertyID uint, amenityIDs []int) error {
 	commonLogFields := log.CommonLogField(r.repositoryContext.RequestID)
-	log.Logger.Debug(log.TraceMsgFuncStart(PropertyRepositoryCreateMethod), log.TraceMethodInputs(commonLogFields, request)...)
-	defer log.Logger.Debug(log.TraceMsgFuncEnd(PropertyRepositoryCreateMethod), commonLogFields...)
+	if len(amenityIDs) == 0 {
+		return nil
+	}
 
-	property := dto.Property{
+	amenities := make([]dto.PropertyAmenity, len(amenityIDs))
+	for i, amenityID := range amenityIDs {
+		amenities[i] = dto.PropertyAmenity{
+			PropertyID: propertyID,
+			AmenityID:  uint(amenityID),
+		}
+	}
+	if err := tx.Model(&dto.PropertyAmenity{}).Create(&amenities).Error; err != nil {
+		log.Logger.Error(log.TraceMsgErrorOccurredWhenInserting("PropertyAmenity"), log.TraceError(commonLogFields, err)...)
+		return err
+	}
+	return nil
+}
+
+// createPropertyUtilities creates utilities for a property
+func (r *propertyRepository) createPropertyUtilities(tx *gorm.DB, propertyID uint, utilityIDs []int) error {
+	commonLogFields := log.CommonLogField(r.repositoryContext.RequestID)
+	if len(utilityIDs) == 0 {
+		return nil
+	}
+
+	utilities := make([]dto.PropertyUtility, len(utilityIDs))
+	for i, utilityID := range utilityIDs {
+		utilities[i] = dto.PropertyUtility{
+			PropertyID: propertyID,
+			UtilityID:  uint(utilityID),
+		}
+	}
+	if err := tx.Model(&dto.PropertyUtility{}).Create(&utilities).Error; err != nil {
+		log.Logger.Error(log.TraceMsgErrorOccurredWhenInserting("PropertyUtility"), log.TraceError(commonLogFields, err)...)
+		return err
+	}
+	return nil
+}
+
+// createPropertyImages creates images for a property
+func (r *propertyRepository) createPropertyImages(tx *gorm.DB, propertyID uint, imageURLs []string) error {
+	commonLogFields := log.CommonLogField(r.repositoryContext.RequestID)
+	if len(imageURLs) == 0 {
+		return nil
+	}
+
+	propertyImages := make([]dto.PropertyImage, len(imageURLs))
+	for i, url := range imageURLs {
+		propertyImages[i] = dto.PropertyImage{
+			PropertyID: propertyID,
+			URL:        url,
+			IsPrimary:  i == 0, // Set the first image as primary
+		}
+	}
+	if err := tx.Model(&dto.PropertyImage{}).Create(&propertyImages).Error; err != nil {
+		log.Logger.Error(log.TraceMsgErrorOccurredWhenInserting("PropertyImage"), log.TraceError(commonLogFields, err)...)
+		return err
+	}
+	return nil
+}
+
+// mapRequestToProperty maps PropertyRequest to Property entity
+func (r *propertyRepository) mapRequestToProperty(request dto.PropertyRequest) dto.Property {
+	return dto.Property{
+		UserID:          request.UserID,
 		Title:           request.Title,
 		Description:     request.Description,
 		PurposeID:       uint(request.PurposeID),
@@ -71,41 +133,37 @@ func (r *propertyRepository) Create(request dto.PropertyRequest) (uint, error) {
 		IsRefundable:    request.IsRefundable,
 		PricingType:     request.PricingType,
 	}
+}
 
+func (r *propertyRepository) Create(request dto.PropertyRequest) (uint, error) {
+	commonLogFields := log.CommonLogField(r.repositoryContext.RequestID)
+	log.Logger.Debug(log.TraceMsgFuncStart(PropertyRepositoryCreateMethod), log.TraceMethodInputs(commonLogFields, request)...)
+	defer log.Logger.Debug(log.TraceMsgFuncEnd(PropertyRepositoryCreateMethod), commonLogFields...)
+
+	// Map request to property entity
+	property := r.mapRequestToProperty(request)
+
+	// Create property and its associations in a transaction
 	err := r.db.Transaction(func(tx *gorm.DB) error {
+		// Create the property
 		if err := tx.Create(&property).Error; err != nil {
 			log.Logger.Error(log.TraceMsgErrorOccurredWhenInserting("Property"), log.TraceError(commonLogFields, err)...)
 			return err
 		}
 
-		// Insert amenities
-		if len(request.AmenityIDs) > 0 {
-			amenities := make([]dto.PropertyAmenity, len(request.AmenityIDs))
-			for i, amenityID := range request.AmenityIDs {
-				amenities[i] = dto.PropertyAmenity{
-					PropertyID: property.ID,
-					AmenityID:  uint(amenityID),
-				}
-			}
-			if err := tx.Create(&amenities).Error; err != nil {
-				log.Logger.Error(log.TraceMsgErrorOccurredWhenInserting("PropertyAmenity"), log.TraceError(commonLogFields, err)...)
-				return err
-			}
+		// Create property images
+		if err := r.createPropertyImages(tx, property.ID, request.Images); err != nil {
+			return err
 		}
 
-		// Insert utilities
-		if len(request.UtilityIDs) > 0 {
-			utilities := make([]dto.PropertyUtility, len(request.UtilityIDs))
-			for i, utilityID := range request.UtilityIDs {
-				utilities[i] = dto.PropertyUtility{
-					PropertyID: property.ID,
-					UtilityID:  uint(utilityID),
-				}
-			}
-			if err := tx.Create(&utilities).Error; err != nil {
-				log.Logger.Error(log.TraceMsgErrorOccurredWhenInserting("PropertyUtility"), log.TraceError(commonLogFields, err)...)
-				return err
-			}
+		// Create amenities
+		if err := r.createPropertyAmenities(tx, property.ID, request.AmenityIDs); err != nil {
+			return err
+		}
+
+		// Create utilities
+		if err := r.createPropertyUtilities(tx, property.ID, request.UtilityIDs); err != nil {
+			return err
 		}
 
 		return nil

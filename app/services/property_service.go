@@ -27,6 +27,7 @@ type PropertyService struct {
 	serviceContext ServiceContext
 	transaction    *gorm.DB
 	propertyRepo   repository.PropertyRepository
+	userRepo       repository.UserRepository
 }
 
 // CreatePropertyService creates a new instance of PropertyService.
@@ -40,7 +41,7 @@ func CreatePropertyService(requestID string, transactionDB *gorm.DB) *PropertySe
 }
 
 // Create creates a new property
-func (service *PropertyService) Create(request dto.PropertyRequest) (response dto.PropertyResponse, errResult *custom.ErrorResult) {
+func (service *PropertyService) Create(request dto.PropertyRequest) (response *dto.PropertyResponse, errResult *custom.ErrorResult) {
 	commonLogFields := log.CommonLogField(service.serviceContext.RequestID)
 	log.Logger.Debug(log.TraceMsgFuncStart(PropertyServiceCreateMethod), log.TraceMethodInputs(commonLogFields, request)...)
 
@@ -54,21 +55,33 @@ func (service *PropertyService) Create(request dto.PropertyRequest) (response dt
 	}()
 
 	service.propertyRepo = repository.CreatePropertyRepository(service.serviceContext.RequestID)
+
+	// Validate images count
+	if len(request.Images) == 0 {
+		errRes := custom.BuildBadReqErrResult(constant.ErrCodeInvalidInput, "at least one property image is required", constant.Empty)
+		return nil, &errRes
+	}
+	if len(request.Images) > 6 {
+		errRes := custom.BuildBadReqErrResult(constant.ErrCodeInvalidInput, "maximum of 6 property images allowed", constant.Empty)
+		return nil, &errRes
+	}
+
+	// Create property
 	propertyID, err := service.propertyRepo.Create(request)
 	if err != nil {
 		logFields := log.TraceError(commonLogFields, err)
 		log.Logger.Error(log.TraceMsgErrorOccurredFrom(repository.PropertyRepositoryCreateMethod), logFields...)
-		return response, buildSelectErrFromRepo("property", err)
+		return nil, buildSelectErrFromRepo("property", err)
 	}
 
-	response, err = service.propertyRepo.GetByID(propertyID)
+	property, err := service.propertyRepo.GetByID(propertyID)
 	if err != nil {
 		logFields := log.TraceError(commonLogFields, err)
 		log.Logger.Error(log.TraceMsgErrorOccurredFrom(repository.PropertyRepositoryGetByIDMethod), logFields...)
-		return response, buildSelectErrFromRepo("property", err)
+		return nil, buildSelectErrFromRepo("property", err)
 	}
 
-	return response, nil
+	return &property, nil
 }
 
 // GetByID retrieves a property by ID

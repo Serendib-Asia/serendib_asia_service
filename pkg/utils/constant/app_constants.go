@@ -1,10 +1,5 @@
 package constant
 
-// Security service tenant id for ICX application
-const (
-	SecSrvICXTenantName = "icx-dashboard"
-)
-
 // DatadogTracingSink is the sink name for Datadog tracing.
 const DatadogTracingSink = "datadog"
 
@@ -171,23 +166,16 @@ const (
 	ExternalAPICallMethod             = "ExternalAPICall"
 	GeneralServiceCallMethod          = "GeneralServiceCall"
 	AiMlServiceAPICallMethod          = "AiMlServiceAPICall"
-	AppendToArrayIfNotEmpty           = "AppendToArrayIfNotEmpty"
-	ValidateAndGetWeekStartDateMethod = "ValidateWeekAndGetWeekStartDate"
+	AppendToArrayIfNotEmptyMethod     = "AppendToArrayIfNotEmpty"
+	ValidateAndGetWeekStartDateMethod = "ValidateAndGetWeekStartDate"
 	ParseBaseURLMethod                = "ParseBaseURL"
-	GenerateTicketURLMethod           = "GenerateTicketURL"
 	IsStrValueTrueMethod              = "IsStrValueTrue"
-)
-
-// Service flags
-const (
-	SDesk = "sdesk"
-	ICX   = "icx"
 )
 
 // External Endpoints security service
 const (
-	SecSrvValidateTokenURI = "/icx/auth/v1/validate/token/icx-dashboard"
-	SecSrvUpdateTenantURI  = "/icx/auth/v1/tenant/user"
+	SecSrvValidateTokenURI = "/auth/v1/validate/token"
+	SecSrvUpdateTenantURI  = "/auth/v1/tenant/user"
 )
 
 // goconst

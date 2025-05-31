@@ -36,18 +36,61 @@ type Property struct {
 	PropertyImages    []PropertyImage   `gorm:"foreignKey:PropertyID"`
 }
 
+// TableName specifies the table name for PropertyAmenity
+func (Property) TableName() string {
+	return "properties"
+}
+
+// Amenity represents an amenity
+type Amenity struct {
+	*Base
+	ID   uint   `gorm:"not null; column:id; primaryKey; autoIncrement"`
+	Name string `gorm:"not null; column:name; type:varchar(50); unique"`
+}
+
+// TableName specifies the table name for Amenity
+func (Amenity) TableName() string {
+	return "amenities"
+}
+
+// Utility represents a utility
+type Utility struct {
+	*Base
+	ID   uint   `gorm:"not null; column:id; primaryKey; autoIncrement"`
+	Name string `gorm:"not null; column:name; type:varchar(50); unique"`
+}
+
+// TableName specifies the table name for Utility
+func (Utility) TableName() string {
+	return "utilities"
+}
+
 // PropertyAmenity represents the many-to-many relationship between properties and amenities
 type PropertyAmenity struct {
 	*Base
-	PropertyID uint `gorm:"not null; column:property_id; primaryKey"`
-	AmenityID  uint `gorm:"not null; column:amenity_id; primaryKey"`
+	PropertyID uint     `gorm:"not null; column:property_id; primaryKey"`
+	AmenityID  uint     `gorm:"not null; column:amenity_id; primaryKey"`
+	Property   Property `gorm:"foreignKey:PropertyID"`
+	Amenity    Amenity  `gorm:"foreignKey:AmenityID"`
+}
+
+// TableName specifies the table name for PropertyAmenity
+func (PropertyAmenity) TableName() string {
+	return "property_amenities"
 }
 
 // PropertyUtility represents the many-to-many relationship between properties and utilities
 type PropertyUtility struct {
 	*Base
-	PropertyID uint `gorm:"not null; column:property_id; primaryKey"`
-	UtilityID  uint `gorm:"not null; column:utility_id; primaryKey"`
+	PropertyID uint     `gorm:"not null; column:property_id; primaryKey"`
+	UtilityID  uint     `gorm:"not null; column:utility_id; primaryKey"`
+	Property   Property `gorm:"foreignKey:PropertyID"`
+	Utility    Utility  `gorm:"foreignKey:UtilityID"`
+}
+
+// TableName specifies the table name for PropertyUtility
+func (PropertyUtility) TableName() string {
+	return "property_utilities"
 }
 
 // PropertyImage represents the property images
@@ -59,31 +102,37 @@ type PropertyImage struct {
 	IsPrimary  bool   `gorm:"column:is_primary; default:false"`
 }
 
+func (PropertyImage) TableName() string {
+	return "property_images"
+}
+
 // PropertyRequest represents the request for creating/updating a property
 type PropertyRequest struct {
-	Title           string  `json:"title" validate:"required,max=150"`
-	Description     string  `json:"description"`
-	PurposeID       int     `json:"purpose_id" validate:"required"`
-	PropertyTypeID  int     `json:"property_type_id" validate:"required"`
-	FurnitureTypeID int     `json:"furniture_type_id"`
-	ConditionID     int     `json:"condition_id"`
-	Bedrooms        int     `json:"bedrooms"`
-	Bathrooms       int     `json:"bathrooms"`
-	Size            float64 `json:"size"`
-	SizeUnit        string  `json:"size_unit" validate:"max=20"`
-	City            string  `json:"city" validate:"required,max=50"`
-	Address         string  `json:"address" validate:"required"`
-	PostalCode      string  `json:"postal_code" validate:"max=10"`
-	Latitude        float64 `json:"latitude"`
-	Longitude       float64 `json:"longitude"`
-	Price           float64 `json:"price" validate:"required"`
-	PriceUnit       string  `json:"price_unit" validate:"required,max=20"`
-	IsNegotiable    bool    `json:"is_negotiable"`
-	RentalPeriod    string  `json:"rental_period" validate:"max=20"`
-	IsRefundable    bool    `json:"is_refundable"`
-	PricingType     string  `json:"pricing_type" validate:"required,oneof=sell rent stay"`
-	AmenityIDs      []int   `json:"amenity_ids"`
-	UtilityIDs      []int   `json:"utility_ids"`
+	UserID          uint     `json:"user_id" validate:"required"`
+	Title           string   `json:"title" validate:"required,max=150"`
+	Description     string   `json:"description"`
+	PurposeID       int      `json:"purpose_id" validate:"required"`
+	PropertyTypeID  int      `json:"property_type_id" validate:"required"`
+	FurnitureTypeID int      `json:"furniture_type_id"`
+	ConditionID     int      `json:"condition_id"`
+	Bedrooms        int      `json:"bedrooms"`
+	Bathrooms       int      `json:"bathrooms"`
+	Size            float64  `json:"size"`
+	SizeUnit        string   `json:"size_unit" validate:"max=20"`
+	City            string   `json:"city" validate:"required,max=50"`
+	Address         string   `json:"address" validate:"required"`
+	PostalCode      string   `json:"postal_code" validate:"max=10"`
+	Latitude        float64  `json:"latitude"`
+	Longitude       float64  `json:"longitude"`
+	Price           float64  `json:"price" validate:"required"`
+	PriceUnit       string   `json:"price_unit" validate:"required,max=20"`
+	IsNegotiable    bool     `json:"is_negotiable"`
+	RentalPeriod    string   `json:"rental_period" validate:"max=20"`
+	IsRefundable    bool     `json:"is_refundable"`
+	PricingType     string   `json:"pricing_type" validate:"required,oneof=sell rent stay"`
+	AmenityIDs      []int    `json:"amenity_ids"`
+	UtilityIDs      []int    `json:"utility_ids"`
+	Images          []string `json:"images"`
 }
 
 // PropertyResponse represents the response for a property

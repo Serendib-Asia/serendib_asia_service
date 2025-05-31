@@ -15,16 +15,10 @@ import (
 )
 
 var dbCon *gorm.DB
-var sdeskDBCon *gorm.DB
 
 // GetDBConnection returns the current database connection
 func GetDBConnection() *gorm.DB {
 	return dbCon
-}
-
-// GetSDeskDBConnection returns the current sdesk database connection
-func GetSDeskDBConnection() *gorm.DB {
-	return sdeskDBCon
 }
 
 // SetDBConnection sets the current database connection
@@ -32,12 +26,9 @@ func SetDBConnection(db *gorm.DB) {
 	dbCon = db
 }
 
-// SetSDeskDBConnection sets the current sdesk database connection
-func SetSDeskDBConnection(sdeskDB *gorm.DB) {
-	sdeskDBCon = sdeskDB
-}
-
 // InitDBConnection initializes the database connection
+// This function initializes the database connection based on the configuration
+// It supports both PostgreSQL and MySQL databases
 func InitDBConnection() (err error) {
 	log.Logger.Debug(log.TraceMsgFuncStart(InitDBConnectionMethod))
 	defer log.Logger.Debug(log.TraceMsgFuncEnd(InitDBConnectionMethod))
@@ -49,17 +40,6 @@ func InitDBConnection() (err error) {
 		return fmt.Errorf("failed to connect to default database: %w", err)
 	}
 
-	switch config.GetConfig().DefaultClient {
-	case constant.SDesk:
-		// Initialize sDesk Databse
-		err = initSDeskDB()
-		if err != nil {
-			log.Logger.Error(log.TraceMsgErrorOccurredFrom(initSDeskDBMethod), zap.Error(err))
-			return fmt.Errorf("failed to connect to sDesk database: %w", err)
-		}
-	default:
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(InitDBConnectionMethod), zap.Any("unable to find default client", config.GetConfig().DefaultClient))
-	}
 	return nil
 }
 
@@ -127,23 +107,7 @@ func initDefaultDB() error {
 	return nil
 }
 
-func initSDeskDB() error {
-	log.Logger.Debug(log.TraceMsgFuncStart(initSDeskDBMethod))
-	defer log.Logger.Debug(log.TraceMsgFuncEnd(initSDeskDBMethod))
-
-	sdeskConfig := config.GetConfig().ClientDBConfig
-
-	sdeskDB, err := initDB(sdeskConfig)
-	if err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(initDBMethod), zap.Error(err))
-		return err
-	}
-
-	SetSDeskDBConnection(sdeskDB)
-	return nil
-}
-
-// InitDBConWithAutoMigrate initializes the database connection and auto migrates the provided models in ICX Database
+// InitDBConWithAutoMigrate initializes the database connection and auto migrates the provided models
 func InitDBConWithAutoMigrate(dst ...any) error {
 	log.Logger.Debug(log.TraceMsgFuncStart(InitDBConWithAutoMigrateMethod))
 	defer log.Logger.Debug(log.TraceMsgFuncEnd(InitDBConWithAutoMigrateMethod))

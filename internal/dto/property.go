@@ -35,8 +35,8 @@ type Property struct {
 	CreatedAt       time.Time         `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 
 	// Many-to-many relationships
-	Amenities []Amenity       `gorm:"many2many:property_amenities;" json:"amenities"`
-	Utilities []Utility       `gorm:"many2many:property_utilities;" json:"utilities"`
+	Amenities []Amenity       `gorm:"many2many:property_amenities;joinForeignKey:PropertyID;joinReferences:AmenityID" json:"amenities"`
+	Utilities []Utility       `gorm:"many2many:property_utilities;joinForeignKey:PropertyID;joinReferences:UtilityID" json:"utilities"`
 	Images    []PropertyImage `json:"images"`
 }
 
@@ -55,4 +55,36 @@ type Favourite struct {
 	PropertyID uint     `gorm:"not null" json:"property_id"`
 	User       User     `gorm:"foreignKey:UserID" json:"user"`
 	Property   Property `gorm:"foreignKey:PropertyID" json:"property"`
+}
+
+// PropertyAmenity represents the property_amenities table
+type PropertyAmenity struct {
+	PropertyID uint       `gorm:"primaryKey" json:"property_id"`
+	AmenityID  uint       `gorm:"primaryKey" json:"amenity_id"`
+	Property   Property   `gorm:"foreignKey:PropertyID" json:"property"`
+	Amenity    Amenity    `gorm:"foreignKey:AmenityID" json:"amenity"`
+	CreatedAt  time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt  time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at"`
+}
+
+// PropertyUtility represents the property_utilities table
+type PropertyUtility struct {
+	PropertyID uint       `gorm:"primaryKey" json:"property_id"`
+	UtilityID  uint       `gorm:"primaryKey" json:"utility_id"`
+	Property   Property   `gorm:"foreignKey:PropertyID" json:"property"`
+	Utility    Utility    `gorm:"foreignKey:UtilityID" json:"utility"`
+	CreatedAt  time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt  time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at"`
+}
+
+// TableName specifies the table name for the PropertyAmenity model
+func (PropertyAmenity) TableName() string {
+	return "property_amenities"
+}
+
+// TableName specifies the table name for the PropertyUtility model
+func (PropertyUtility) TableName() string {
+	return "property_utilities"
 }

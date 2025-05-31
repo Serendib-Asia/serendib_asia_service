@@ -1,0 +1,1228 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "Serendib Asia Service",
+		"description": "API collection for Serendib Asia Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"John Doe\",\n    \"phone_number\": \"+1234567890\",\n    \"profile_image\": \"https://example.com/profile.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"John Doe\",\n    \"phone_number\": \"+1234567890\",\n    \"profile_image\": \"https://example.com/profile.jpg\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/auth/register",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": 1,\n        \"full_name\": \"John Doe\",\n        \"email\": \"user@example.com\",\n        \"phone_number\": \"+1234567890\",\n        \"profile_image\": \"https://example.com/profile.jpg\",\n        \"created_at\": \"2024-03-20T10:00:00Z\"\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/users/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "users", "login"]
+						},
+						"description": "Login with user credentials"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/users/login",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "users", "login"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"user\": {\n        \"id\": 1,\n        \"full_name\": \"John Doe\",\n        \"email\": \"user@example.com\",\n        \"phone_number\": \"\",\n        \"profile_image\": \"\",\n        \"created_at\": \"2024-03-19T10:00:00Z\"\n    },\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/users/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "users", "profile"]
+						},
+						"description": "Get user profile information"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/users/profile",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "users", "profile"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"full_name\": \"John Doe\",\n    \"email\": \"user@example.com\",\n    \"phone_number\": \"\",\n    \"profile_image\": \"\",\n    \"created_at\": \"2024-03-19T10:00:00Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update User Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"full_name\": \"John Updated\",\n    \"phone_number\": \"+1234567890\",\n    \"profile_image\": \"https://example.com/profile.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/users/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "users", "profile"]
+						},
+						"description": "Update user profile information"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"full_name\": \"John Updated\",\n    \"phone_number\": \"+1234567890\",\n    \"profile_image\": \"https://example.com/profile.jpg\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/users/profile",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "users", "profile"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"full_name\": \"John Updated\",\n    \"email\": \"user@example.com\",\n    \"phone_number\": \"+1234567890\",\n    \"profile_image\": \"https://example.com/profile.jpg\",\n    \"created_at\": \"2024-03-19T10:00:00Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update User Password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"current_password\": \"password123\",\n    \"new_password\": \"newpassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/users/password",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "users", "password"]
+						},
+						"description": "Update user password"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"current_password\": \"password123\",\n    \"new_password\": \"newpassword123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/users/password",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "users", "password"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Properties",
+			"item": [
+				{
+					"name": "Create Property",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 1,\n    \"title\": \"Luxury Villa\",\n    \"description\": \"Beautiful villa with ocean view\",\n    \"purpose_id\": 1,\n    \"property_type_id\": 1,\n    \"furniture_type_id\": 1,\n    \"condition_id\": 1,\n    \"bedrooms\": 3,\n    \"bathrooms\": 2,\n    \"size\": 2000,\n    \"size_unit\": \"sqft\",\n    \"city\": \"Colombo\",\n    \"address\": \"123 Main St\",\n    \"postal_code\": \"00100\",\n    \"latitude\": 6.9271,\n    \"longitude\": 79.8612,\n    \"price\": 500000,\n    \"price_unit\": \"USD\",\n    \"is_negotiable\": true,\n    \"rental_period\": \"monthly\",\n    \"is_refundable\": true,\n    \"pricing_type\": \"sell\",\n    \"amenity_ids\": [1, 2, 3],\n    \"utility_ids\": [1, 2, 3],\n    \"images\": [\n        \"https://example.com/image1.jpg\",\n        \"https://example.com/image2.jpg\",\n        \"https://example.com/image3.jpg\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties"]
+						},
+						"description": "Create a new property listing"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": 1,\n    \"title\": \"Luxury Villa\",\n    \"description\": \"Beautiful villa with ocean view\",\n    \"purpose_id\": 1,\n    \"property_type_id\": 1,\n    \"furniture_type_id\": 1,\n    \"condition_id\": 1,\n    \"bedrooms\": 3,\n    \"bathrooms\": 2,\n    \"size\": 2000,\n    \"size_unit\": \"sqft\",\n    \"city\": \"Colombo\",\n    \"address\": \"123 Main St\",\n    \"postal_code\": \"00100\",\n    \"latitude\": 6.9271,\n    \"longitude\": 79.8612,\n    \"price\": 500000,\n    \"price_unit\": \"USD\",\n    \"is_negotiable\": true,\n    \"rental_period\": \"monthly\",\n    \"is_refundable\": true,\n    \"pricing_type\": \"sell\",\n    \"amenity_ids\": [1, 2, 3],\n    \"utility_ids\": [1, 2, 3],\n    \"images\": [\n        \"https://example.com/image1.jpg\",\n        \"https://example.com/image2.jpg\",\n        \"https://example.com/image3.jpg\"\n    ]\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/properties",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "properties"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"user_id\": 1,\n    \"title\": \"Luxury Villa\",\n    \"description\": \"Beautiful villa with ocean view\",\n    \"purpose_id\": 1,\n    \"property_type_id\": 1,\n    \"furniture_type_id\": 1,\n    \"condition_id\": 1,\n    \"bedrooms\": 3,\n    \"bathrooms\": 2,\n    \"size\": 2000,\n    \"size_unit\": \"sqft\",\n    \"city\": \"Colombo\",\n    \"address\": \"123 Main St\",\n    \"postal_code\": \"00100\",\n    \"latitude\": 6.9271,\n    \"longitude\": 79.8612,\n    \"price\": 500000,\n    \"price_unit\": \"USD\",\n    \"is_negotiable\": true,\n    \"rental_period\": \"monthly\",\n    \"is_refundable\": true,\n    \"pricing_type\": \"sell\",\n    \"created_at\": \"2024-03-19T10:00:00Z\",\n    \"amenities\": [1, 2, 3],\n    \"utilities\": [1, 2, 3],\n    \"images\": [\n        \"https://example.com/image1.jpg\",\n        \"https://example.com/image2.jpg\",\n        \"https://example.com/image3.jpg\"\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Property",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Get property details by ID"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"url": {
+									"raw": "{{base_url}}/api/v1/properties/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "properties", "1"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"user_id\": 1,\n    \"title\": \"Luxury Villa\",\n    \"description\": \"Beautiful villa with ocean view\",\n    \"purpose_id\": 1,\n    \"property_type_id\": 1,\n    \"furniture_type_id\": 1,\n    \"condition_id\": 1,\n    \"bedrooms\": 3,\n    \"bathrooms\": 2,\n    \"size\": 2000,\n    \"size_unit\": \"sqft\",\n    \"city\": \"Colombo\",\n    \"address\": \"123 Main St\",\n    \"postal_code\": \"00100\",\n    \"latitude\": 6.9271,\n    \"longitude\": 79.8612,\n    \"price\": 500000,\n    \"price_unit\": \"USD\",\n    \"is_negotiable\": true,\n    \"rental_period\": \"monthly\",\n    \"is_refundable\": true,\n    \"pricing_type\": \"sell\",\n    \"created_at\": \"2024-03-19T10:00:00Z\",\n    \"amenities\": [1, 2, 3],\n    \"utilities\": [1, 2, 3],\n    \"images\": [\n        \"https://example.com/image1.jpg\",\n        \"https://example.com/image2.jpg\"\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Property",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Luxury Villa\",\n    \"description\": \"Updated description\",\n    \"price\": 550000,\n    \"is_negotiable\": false,\n    \"amenity_ids\": [1, 2, 3, 4],\n    \"utility_ids\": [1, 2, 3, 4]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Update property details"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"title\": \"Updated Luxury Villa\",\n    \"description\": \"Updated description\",\n    \"price\": 550000,\n    \"is_negotiable\": false,\n    \"amenity_ids\": [1, 2, 3, 4],\n    \"utility_ids\": [1, 2, 3, 4]\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/properties/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "properties", "1"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"user_id\": 1,\n    \"title\": \"Updated Luxury Villa\",\n    \"description\": \"Updated description\",\n    \"purpose_id\": 1,\n    \"property_type_id\": 1,\n    \"furniture_type_id\": 1,\n    \"condition_id\": 1,\n    \"bedrooms\": 3,\n    \"bathrooms\": 2,\n    \"size\": 2000,\n    \"size_unit\": \"sqft\",\n    \"city\": \"Colombo\",\n    \"address\": \"123 Main St\",\n    \"postal_code\": \"00100\",\n    \"latitude\": 6.9271,\n    \"longitude\": 79.8612,\n    \"price\": 550000,\n    \"price_unit\": \"USD\",\n    \"is_negotiable\": false,\n    \"rental_period\": \"monthly\",\n    \"is_refundable\": true,\n    \"pricing_type\": \"sell\",\n    \"created_at\": \"2024-03-19T10:00:00Z\",\n    \"amenities\": [1, 2, 3, 4],\n    \"utilities\": [1, 2, 3, 4],\n    \"images\": [\n        \"https://example.com/image1.jpg\",\n        \"https://example.com/image2.jpg\"\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Property",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Delete a property"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/properties/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "properties", "1"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "List Properties",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties?page=1&limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "List all properties with pagination"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"url": {
+									"raw": "{{base_url}}/api/v1/properties?page=1&limit=10",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "properties"],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"title\": \"Luxury Villa\",\n        \"description\": \"Beautiful villa with ocean view\",\n        \"purpose_id\": 1,\n        \"property_type_id\": 1,\n        \"furniture_type_id\": 1,\n        \"condition_id\": 1,\n        \"bedrooms\": 3,\n        \"bathrooms\": 2,\n        \"size\": 2000,\n        \"size_unit\": \"sqft\",\n        \"city\": \"Colombo\",\n        \"address\": \"123 Main St\",\n        \"postal_code\": \"00100\",\n        \"latitude\": 6.9271,\n        \"longitude\": 79.8612,\n        \"price\": 500000,\n        \"price_unit\": \"USD\",\n        \"is_negotiable\": true,\n        \"rental_period\": \"monthly\",\n        \"is_refundable\": true,\n        \"pricing_type\": \"sell\",\n        \"created_at\": \"2024-03-19T10:00:00Z\",\n        \"amenities\": [1, 2, 3],\n        \"utilities\": [1, 2, 3],\n        \"images\": [\n            \"https://example.com/image1.jpg\",\n            \"https://example.com/image2.jpg\"\n        ]\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Property Images",
+			"item": [
+				{
+					"name": "Upload Property Image",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"url\": \"https://example.com/property-image.jpg\",\n    \"is_primary\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/:id/images",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", ":id", "images"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Upload a new image for a property"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"url\": \"https://example.com/property-image.jpg\",\n    \"is_primary\": true\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/properties/1/images",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "properties", "1", "images"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"property_id\": 1,\n    \"url\": \"https://example.com/property-image.jpg\",\n    \"is_primary\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Property Images",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/:id/images",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", ":id", "images"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Get all images for a property"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"url": {
+									"raw": "{{base_url}}/api/v1/properties/1/images",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "properties", "1", "images"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"items\": [\n        {\n            \"id\": 1,\n            \"property_id\": 1,\n            \"url\": \"https://example.com/property-image1.jpg\",\n            \"is_primary\": true\n        },\n        {\n            \"id\": 2,\n            \"property_id\": 1,\n            \"url\": \"https://example.com/property-image2.jpg\",\n            \"is_primary\": false\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Property Image",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/:id/images/:image_id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "properties", ":id", "images", ":image_id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								},
+								{
+									"key": "image_id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Delete a property image"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/properties/1/images/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "properties", "1", "images", "1"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Lookup Tables",
+			"item": [
+				{
+					"name": "Get Purpose Types",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/v1/lookups/purpose-types",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "lookups", "purpose-types"]
+						},
+						"description": "Get all purpose types"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"url": {
+									"raw": "{{base_url}}/api/v1/lookups/purpose-types",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "lookups", "purpose-types"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"items\": [\n        {\n            \"id\": 1,\n            \"name\": \"Residential\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Commercial\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Property Types",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/v1/lookups/property-types",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "lookups", "property-types"]
+						},
+						"description": "Get all property types"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"url": {
+									"raw": "{{base_url}}/api/v1/lookups/property-types",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "lookups", "property-types"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"items\": [\n        {\n            \"id\": 1,\n            \"name\": \"House\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Apartment\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Villa\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Furniture Types",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/v1/lookups/furniture-types",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "lookups", "furniture-types"]
+						},
+						"description": "Get all furniture types"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"url": {
+									"raw": "{{base_url}}/api/v1/lookups/furniture-types",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "lookups", "furniture-types"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"items\": [\n        {\n            \"id\": 1,\n            \"name\": \"Furnished\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Unfurnished\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Semi-furnished\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Property Conditions",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/v1/lookups/property-conditions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "lookups", "property-conditions"]
+						},
+						"description": "Get all property conditions"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"url": {
+									"raw": "{{base_url}}/api/v1/lookups/property-conditions",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "lookups", "property-conditions"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"items\": [\n        {\n            \"id\": 1,\n            \"name\": \"New\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Used\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Under Construction\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Utilities",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/v1/lookups/utilities",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "lookups", "utilities"]
+						},
+						"description": "Get all utilities"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"url": {
+									"raw": "{{base_url}}/api/v1/lookups/utilities",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "lookups", "utilities"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"items\": [\n        {\n            \"id\": 1,\n            \"name\": \"Water\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Electricity\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Gas\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Amenities",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/api/v1/lookups/amenities",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "lookups", "amenities"]
+						},
+						"description": "Get all amenities"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"url": {
+									"raw": "{{base_url}}/api/v1/lookups/amenities",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "lookups", "amenities"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"items\": [\n        {\n            \"id\": 1,\n            \"name\": \"Swimming Pool\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Gym\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Parking\"\n        }\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Favorites",
+			"item": [
+				{
+					"name": "Add to Favorites",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"property_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/favorites",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "favorites"]
+						},
+						"description": "Add a property to favorites"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"property_id\": 1\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/favorites",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "favorites"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"user_id\": 1,\n    \"property_id\": 1,\n    \"property\": {\n        \"id\": 1,\n        \"title\": \"Luxury Villa\",\n        \"description\": \"Beautiful villa with ocean view\",\n        \"price\": 500000,\n        \"price_unit\": \"USD\",\n        \"city\": \"Colombo\",\n        \"address\": \"123 Main St\",\n        \"url\": \"https://example.com/property-image1.jpg\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Remove from Favorites",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"property_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/favorites",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "favorites"]
+						},
+						"description": "Remove a property from favorites"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"property_id\": 1\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/favorites",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "favorites"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "List Favorites",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/favorites?page=1&limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "favorites"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "List all favorite properties with pagination"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/v1/favorites?page=1&limit=10",
+									"host": ["{{base_url}}"],
+									"path": ["api", "v1", "favorites"],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"items\": [\n        {\n            \"id\": 1,\n            \"user_id\": 1,\n            \"property_id\": 1,\n            \"property\": {\n                \"id\": 1,\n                \"title\": \"Luxury Villa\",\n                \"description\": \"Beautiful villa with ocean view\",\n                \"price\": 500000,\n                \"price_unit\": \"USD\",\n                \"city\": \"Colombo\",\n                \"address\": \"123 Main St\",\n                \"url\": \"https://example.com/property-image1.jpg\"\n            }\n        },\n        {\n            \"id\": 2,\n            \"user_id\": 1,\n            \"property_id\": 2,\n            \"property\": {\n                \"id\": 2,\n                \"title\": \"Modern Apartment\",\n                \"description\": \"Spacious apartment in city center\",\n                \"price\": 300000,\n                \"price_unit\": \"USD\",\n                \"city\": \"Colombo\",\n                \"address\": \"456 High St\",\n                \"url\": \"https://example.com/property-image2.jpg\"\n            }\n        }\n    ],\n    \"total\": 2\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [""]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [""]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "your_auth_token_here",
+			"type": "string"
+		}
+	]
+} 
