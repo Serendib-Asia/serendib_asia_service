@@ -9,6 +9,7 @@ require (
 	github.com/swaggo/fiber-swagger v1.3.0
 	github.com/valyala/fasthttp v1.51.0
 	go.uber.org/zap v1.27.0
+	golang.org/x/crypto v0.29.0
 	gorm.io/gorm v1.25.10
 )
 
@@ -53,7 +54,6 @@ require (
 	github.com/swaggo/swag v1.16.3 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/crypto v0.29.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	golang.org/x/net v0.31.0 // indirect
 	golang.org/x/sync v0.9.0 // indirect

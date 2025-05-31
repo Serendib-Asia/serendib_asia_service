@@ -6,150 +6,284 @@ import (
 	"github.com/chazool/serendib_asia_service/pkg/custom"
 	"github.com/chazool/serendib_asia_service/pkg/log"
 	"github.com/chazool/serendib_asia_service/pkg/utils/constant"
+	"github.com/chazool/serendib_asia_service/pkg/web"
+	"github.com/chazool/serendib_asia_service/pkg/web/responsebuilder"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 const (
 	// Property handler methods
-	PropertyHandlerCreateMethod  = "PropertyHandlerCreate"
-	PropertyHandlerGetByIDMethod = "PropertyHandlerGetByID"
-	PropertyHandlerUpdateMethod  = "PropertyHandlerUpdate"
-	PropertyHandlerDeleteMethod  = "PropertyHandlerDelete"
-	PropertyHandlerListMethod    = "PropertyHandlerList"
+	HandleCreatePropertyMethod = "HandleCreateProperty"
+	HandleGetPropertyMethod    = "HandleGetProperty"
+	HandleUpdatePropertyMethod = "HandleUpdateProperty"
+	HandleDeletePropertyMethod = "HandleDeleteProperty"
+	HandleListPropertiesMethod = "HandleListProperties"
 )
 
-type PropertyHandler struct {
-	_              struct{}
-	handlerContext Context
-	propertySvc    *services.PropertyService
+// HandleCreateProperty handles the creation of a new property
+// @Summary Create a new property
+// @Description Creates a new property with the provided details
+// @Tags properties
+// @Accept json
+// @Produce json
+// @Param property body dto.PropertyRequest true "Property details"
+// @Success 200 {object} dto.Property
+// @Failure 400 {object} custom.ErrorResult
+// @Failure 500 {object} custom.ErrorResult
+// @Router /api/properties [post]
+func HandleCreateProperty(ctx *fiber.Ctx) error {
+	requestID := web.GetRequestID(ctx)
+	commonLogFields := log.CommonLogField(requestID)
+	log.Logger.Info(log.TraceMsgFuncStart(HandleCreatePropertyMethod), commonLogFields...)
+	defer log.Logger.Info(log.TraceMsgFuncEnd(HandleCreatePropertyMethod), commonLogFields...)
+
+	var (
+		statusCode      int
+		errorResult     *custom.ErrorResult
+		errRes          custom.ErrorResult
+		request         dto.PropertyRequest
+		response        *dto.PropertyResponse
+		propertyService = services.CreatePropertyService(requestID, nil)
+	)
+
+	if err := ctx.BodyParser(&request); err != nil {
+		logFields := log.TraceError(commonLogFields, err)
+		log.Logger.Error(log.TraceMsgErrorOccurredFrom(HandleCreatePropertyMethod), logFields...)
+		errRes := custom.BuildBadReqErrResult(constant.BindingErrorCode, constant.InvalidRequestErrorMessage, err.Error())
+		errorResult = &errRes
+		statusCode, errRes = HandleError(errorResult)
+	} else {
+		response, errorResult = propertyService.Create(request)
+		if errorResult != nil {
+			logFields := log.TraceCustomError(commonLogFields, *errorResult)
+			log.Logger.Error(log.TraceMsgErrorOccurredFrom(services.PropertyServiceCreateMethod), logFields...)
+			statusCode, errRes = HandleError(errorResult)
+		}
+	}
+
+	responseBuilder := responsebuilder.APIResponse{
+		Ctx:           ctx,
+		HTTPStatus:    statusCode,
+		ErrorResponse: errRes,
+		Response:      response,
+		RequestID:     requestID,
+	}
+	responseBuilder.BuildAPIResponse()
+
+	return nil
 }
 
-// CreatePropertyHandler creates a new instance of PropertyHandler
-func CreatePropertyHandler(requestID string) *PropertyHandler {
-	return &PropertyHandler{
-		handlerContext: CreateHandlerContext(requestID),
-		propertySvc:    services.CreatePropertyService(requestID, nil),
+// HandleGetProperty handles retrieving a property by ID
+// @Summary Get a property by ID
+// @Description Retrieves a property's details by its ID
+// @Tags properties
+// @Accept json
+// @Produce json
+// @Param id path int true "Property ID"
+// @Success 200 {object} dto.PropertyResponse
+// @Failure 400 {object} custom.ErrorResult
+// @Failure 404 {object} custom.ErrorResult
+// @Failure 500 {object} custom.ErrorResult
+// @Router /api/properties/{id} [get]
+func HandleGetProperty(ctx *fiber.Ctx) error {
+	requestID := web.GetRequestID(ctx)
+	commonLogFields := log.CommonLogField(requestID)
+	log.Logger.Info(log.TraceMsgFuncStart(HandleGetPropertyMethod), commonLogFields...)
+	defer log.Logger.Info(log.TraceMsgFuncEnd(HandleGetPropertyMethod), commonLogFields...)
+
+	var (
+		statusCode      int = fiber.StatusOK
+		errorResult     *custom.ErrorResult
+		errRes          custom.ErrorResult
+		response        dto.PropertyResponse
+		propertyService = services.CreatePropertyService(requestID, nil)
+	)
+
+	propertyID, err := GetPropertyIDFromParams(ctx)
+	if err != nil {
+		log.Logger.Error(log.TraceMsgErrorOccurredFrom(HandleGetPropertyMethod), commonLogFields...)
+		errorResult = err
+		statusCode, errRes = HandleError(errorResult)
+	} else {
+		response, errorResult = propertyService.GetByID(propertyID)
+		if errorResult != nil {
+			logFields := log.TraceCustomError(commonLogFields, *errorResult)
+			log.Logger.Error(log.TraceMsgErrorOccurredFrom(services.PropertyServiceGetByIDMethod), logFields...)
+			statusCode, errRes = HandleError(errorResult)
+		}
 	}
+
+	responseBuilder := responsebuilder.APIResponse{
+		Ctx:           ctx,
+		HTTPStatus:    statusCode,
+		ErrorResponse: errRes,
+		Response:      response,
+		RequestID:     requestID,
+	}
+	responseBuilder.BuildAPIResponse()
+
+	return nil
 }
 
-// Create handles property creation
-func (h *PropertyHandler) Create(c *fiber.Ctx) error {
-	commonLogFields := log.CommonLogField(h.handlerContext.RequestID)
-	log.Logger.Debug(log.TraceMsgFuncStart(PropertyHandlerCreateMethod), commonLogFields...)
-	defer log.Logger.Debug(log.TraceMsgFuncEnd(PropertyHandlerCreateMethod), commonLogFields...)
+// HandleUpdateProperty handles updating a property
+// @Summary Update a property
+// @Description Updates a property's details
+// @Tags properties
+// @Accept json
+// @Produce json
+// @Param id query int true "Property ID"
+// @Param property body dto.PropertyRequest true "Property details"
+// @Success 200 {object} dto.PropertyResponse
+// @Failure 400 {object} custom.ErrorResult
+// @Failure 404 {object} custom.ErrorResult
+// @Failure 500 {object} custom.ErrorResult
+// @Router /api/properties [put]
+func HandleUpdateProperty(ctx *fiber.Ctx) error {
+	requestID := web.GetRequestID(ctx)
+	commonLogFields := log.CommonLogField(requestID)
+	log.Logger.Info(log.TraceMsgFuncStart(HandleUpdatePropertyMethod), commonLogFields...)
+	defer log.Logger.Info(log.TraceMsgFuncEnd(HandleUpdatePropertyMethod), commonLogFields...)
 
-	// Parse request
-	var request dto.PropertyRequest
-	if err := c.BodyParser(&request); err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(PropertyHandlerCreateMethod), log.TraceError(commonLogFields, err)...)
-		errRes := custom.BuildBadReqErrResult(constant.BindingErrorCode, constant.BindingErrorMessage, "Request")
-		return c.Status(fiber.StatusBadRequest).JSON(errRes)
+	var (
+		statusCode      int
+		errorResult     *custom.ErrorResult
+		errRes          custom.ErrorResult
+		request         dto.PropertyRequest
+		response        dto.PropertyResponse
+		propertyService = services.CreatePropertyService(requestID, nil)
+	)
+
+	propertyID := ctx.QueryInt("id")
+	if propertyID <= 0 {
+		log.Logger.Error(log.TraceMsgErrorOccurredFrom(HandleUpdatePropertyMethod), commonLogFields...)
+		errRes := custom.BuildBadReqErrResult(constant.BindingErrorCode, constant.InvalidRequestErrorMessage, "Invalid property ID")
+		errorResult = &errRes
+		statusCode, errRes = HandleError(errorResult)
+	} else if err := ctx.BodyParser(&request); err != nil {
+		logFields := log.TraceError(commonLogFields, err)
+		log.Logger.Error(log.TraceMsgErrorOccurredFrom(HandleUpdatePropertyMethod), logFields...)
+		errRes := custom.BuildBadReqErrResult(constant.BindingErrorCode, constant.InvalidRequestErrorMessage, err.Error())
+		errorResult = &errRes
+		statusCode, errRes = HandleError(errorResult)
+	} else {
+		response, errorResult = propertyService.Update(uint(propertyID), request)
+		if errorResult != nil {
+			logFields := log.TraceCustomError(commonLogFields, *errorResult)
+			log.Logger.Error(log.TraceMsgErrorOccurredFrom(services.PropertyServiceUpdateMethod), logFields...)
+			statusCode, errRes = HandleError(errorResult)
+		}
 	}
 
-	// Create property
-	response, err := h.propertySvc.Create(request)
-	if err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(PropertyHandlerCreateMethod), log.TraceError(commonLogFields, err)...)
-		return c.Status(fiber.StatusInternalServerError).JSON(err)
+	responseBuilder := responsebuilder.APIResponse{
+		Ctx:           ctx,
+		HTTPStatus:    statusCode,
+		ErrorResponse: errRes,
+		Response:      response,
+		RequestID:     requestID,
 	}
+	responseBuilder.BuildAPIResponse()
 
-	return c.Status(fiber.StatusCreated).JSON(response)
+	return nil
 }
 
-// GetByID handles getting a property by ID
-func (h *PropertyHandler) GetByID(c *fiber.Ctx) error {
-	commonLogFields := log.CommonLogField(h.handlerContext.RequestID)
-	log.Logger.Debug(log.TraceMsgFuncStart(PropertyHandlerGetByIDMethod), commonLogFields...)
-	defer log.Logger.Debug(log.TraceMsgFuncEnd(PropertyHandlerGetByIDMethod), commonLogFields...)
+// HandleDeleteProperty handles deleting a property
+// @Summary Delete a property
+// @Description Deletes a property by its ID
+// @Tags properties
+// @Accept json
+// @Produce json
+// @Param id query int true "Property ID"
+// @Success 200 {object} dto.PropertyResponse
+// @Failure 400 {object} custom.ErrorResult
+// @Failure 404 {object} custom.ErrorResult
+// @Failure 500 {object} custom.ErrorResult
+// @Router /api/properties [delete]
+func HandleDeleteProperty(ctx *fiber.Ctx) error {
+	requestID := web.GetRequestID(ctx)
+	commonLogFields := log.CommonLogField(requestID)
+	log.Logger.Info(log.TraceMsgFuncStart(HandleDeletePropertyMethod), commonLogFields...)
+	defer log.Logger.Info(log.TraceMsgFuncEnd(HandleDeletePropertyMethod), commonLogFields...)
 
-	// Get property ID from params
-	propertyID, err := GetPropertyIDFromParams(c)
-	if err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(PropertyHandlerGetByIDMethod), log.TraceError(commonLogFields, err)...)
-		return c.Status(fiber.StatusBadRequest).JSON(err)
+	var (
+		statusCode      int
+		errorResult     *custom.ErrorResult
+		errRes          custom.ErrorResult
+		response        dto.PropertyResponse
+		propertyService = services.CreatePropertyService(requestID, nil)
+	)
+
+	propertyID := ctx.QueryInt("id")
+	if propertyID <= 0 {
+		log.Logger.Error(log.TraceMsgErrorOccurredFrom(HandleDeletePropertyMethod), commonLogFields...)
+		errRes := custom.BuildBadReqErrResult(constant.BindingErrorCode, constant.InvalidRequestErrorMessage, "Invalid property ID")
+		errorResult = &errRes
+		statusCode, errRes = HandleError(errorResult)
+	} else {
+		response, errorResult = propertyService.Delete(uint(propertyID))
+		if errorResult != nil {
+			logFields := log.TraceCustomError(commonLogFields, *errorResult)
+			log.Logger.Error(log.TraceMsgErrorOccurredFrom(services.PropertyServiceDeleteMethod), logFields...)
+			statusCode, errRes = HandleError(errorResult)
+		}
 	}
 
-	// Get property
-	response, err := h.propertySvc.GetByID(propertyID)
-	if err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(PropertyHandlerGetByIDMethod), log.TraceError(commonLogFields, err)...)
-		return c.Status(fiber.StatusInternalServerError).JSON(err)
+	responseBuilder := responsebuilder.APIResponse{
+		Ctx:           ctx,
+		HTTPStatus:    statusCode,
+		ErrorResponse: errRes,
+		Response:      response,
+		RequestID:     requestID,
 	}
+	responseBuilder.BuildAPIResponse()
 
-	return c.Status(fiber.StatusOK).JSON(response)
+	return nil
 }
 
-// Update handles property update
-func (h *PropertyHandler) Update(c *fiber.Ctx) error {
-	commonLogFields := log.CommonLogField(h.handlerContext.RequestID)
-	log.Logger.Debug(log.TraceMsgFuncStart(PropertyHandlerUpdateMethod), commonLogFields...)
-	defer log.Logger.Debug(log.TraceMsgFuncEnd(PropertyHandlerUpdateMethod), commonLogFields...)
+// HandleListProperties handles listing properties
+// @Summary List properties
+// @Description Lists properties with pagination
+// @Tags properties
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number"
+// @Param page_size query int false "Page size"
+// @Success 200 {object} []dto.PropertyResponse
+// @Failure 400 {object} custom.ErrorResult
+// @Failure 500 {object} custom.ErrorResult
+// @Router /api/properties [get]
+func HandleListProperties(ctx *fiber.Ctx) error {
+	requestID := web.GetRequestID(ctx)
+	commonLogFields := log.CommonLogField(requestID)
+	log.Logger.Info(log.TraceMsgFuncStart(HandleListPropertiesMethod), commonLogFields...)
+	defer log.Logger.Info(log.TraceMsgFuncEnd(HandleListPropertiesMethod), commonLogFields...)
 
-	// Get property ID from params
-	propertyID, err := GetPropertyIDFromParams(c)
-	if err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(PropertyHandlerUpdateMethod), log.TraceError(commonLogFields, err)...)
-		return c.Status(fiber.StatusBadRequest).JSON(err)
+	var (
+		statusCode      int
+		errorResult     *custom.ErrorResult
+		errRes          custom.ErrorResult
+		response        []dto.PropertyResponse
+		propertyService = services.CreatePropertyService(requestID, nil)
+	)
+
+	page := ctx.QueryInt("page", 1)
+	pageSize := ctx.QueryInt("page_size", 10)
+
+	response, errorResult = propertyService.List(page, pageSize)
+	if errorResult != nil {
+		logFields := log.TraceCustomError(commonLogFields, *errorResult)
+		log.Logger.Error(log.TraceMsgErrorOccurredFrom(services.PropertyServiceListMethod), logFields...)
+		statusCode, errRes = HandleError(errorResult)
 	}
 
-	// Parse request
-	var request dto.PropertyRequest
-	if err := c.BodyParser(&request); err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(PropertyHandlerUpdateMethod), log.TraceError(commonLogFields, err)...)
-		errRes := custom.BuildBadReqErrResult(constant.BindingErrorCode, constant.BindingErrorMessage, "Request")
-		return c.Status(fiber.StatusBadRequest).JSON(errRes)
+	responseBuilder := responsebuilder.APIResponse{
+		Ctx:           ctx,
+		HTTPStatus:    statusCode,
+		ErrorResponse: errRes,
+		Response:      response,
+		RequestID:     requestID,
 	}
+	responseBuilder.BuildAPIResponse()
 
-	// Update property
-	response, err := h.propertySvc.Update(propertyID, request)
-	if err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(PropertyHandlerUpdateMethod), log.TraceError(commonLogFields, err)...)
-		return c.Status(fiber.StatusInternalServerError).JSON(err)
-	}
-
-	return c.Status(fiber.StatusOK).JSON(response)
-}
-
-// Delete handles property deletion
-func (h *PropertyHandler) Delete(c *fiber.Ctx) error {
-	commonLogFields := log.CommonLogField(h.handlerContext.RequestID)
-	log.Logger.Debug(log.TraceMsgFuncStart(PropertyHandlerDeleteMethod), commonLogFields...)
-	defer log.Logger.Debug(log.TraceMsgFuncEnd(PropertyHandlerDeleteMethod), commonLogFields...)
-
-	// Get property ID from params
-	propertyID, err := GetPropertyIDFromParams(c)
-	if err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(PropertyHandlerDeleteMethod), log.TraceError(commonLogFields, err)...)
-		return c.Status(fiber.StatusBadRequest).JSON(err)
-	}
-
-	// Delete property
-	response, err := h.propertySvc.Delete(propertyID)
-	if err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(PropertyHandlerDeleteMethod), log.TraceError(commonLogFields, err)...)
-		return c.Status(fiber.StatusInternalServerError).JSON(err)
-	}
-
-	return c.Status(fiber.StatusOK).JSON(response)
-}
-
-// List handles listing properties
-func (h *PropertyHandler) List(c *fiber.Ctx) error {
-	commonLogFields := log.CommonLogField(h.handlerContext.RequestID)
-	log.Logger.Debug(log.TraceMsgFuncStart(PropertyHandlerListMethod), commonLogFields...)
-	defer log.Logger.Debug(log.TraceMsgFuncEnd(PropertyHandlerListMethod), commonLogFields...)
-
-	// Get pagination params
-	page := c.QueryInt("page", 1)
-	pageSize := c.QueryInt("page_size", 10)
-
-	// List properties
-	response, err := h.propertySvc.List(page, pageSize)
-	if err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(PropertyHandlerListMethod), log.TraceError(commonLogFields, err)...)
-		return c.Status(fiber.StatusInternalServerError).JSON(err)
-	}
-
-	return c.Status(fiber.StatusOK).JSON(response)
+	return nil
 }
