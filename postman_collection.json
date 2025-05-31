@@ -1,8 +1,8 @@
 {
 	"info": {
 		"_postman_id": "your-collection-id",
-		"name": "Project Template API",
-		"description": "API collection for the Project Template application",
+		"name": "Serendib Asia Service API",
+		"description": "API collection for the Serendib Asia Service application",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -36,122 +36,21 @@
 			]
 		},
 		{
-			"name": "Agent",
-			"item": [
-				{
-					"name": "Get Agent List",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/api/v1/agent/list",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "agent", "list"]
-						}
-					}
-				},
-				{
-					"name": "Get Completed Cases Count",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/agent/completedcasescount",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "agent", "completedcasescount"]
-						}
-					}
-				},
-				{
-					"name": "Get Agent Skill Scores",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/agent/skillscores",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "agent", "skillscores"]
-						}
-					}
-				},
-				{
-					"name": "Get Agent Status",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/agent/status",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "agent", "status"]
-						}
-					}
-				},
-				{
-					"name": "Validate Agent",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/agent/validate",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "agent", "validate"]
-						}
-					}
-				}
-			]
-		},
-		{
 			"name": "Properties",
 			"item": [
 				{
 					"name": "Create Property",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n    \"title\": \"Sample Property\",\n    \"description\": \"A sample property description\",\n    \"price\": 100000,\n    \"location\": \"Sample Location\",\n    \"property_type_id\": 1,\n    \"purpose_type_id\": 1,\n    \"furniture_type_id\": 1,\n    \"condition_id\": 1,\n    \"utilities\": [1, 2],\n    \"amenities\": [1, 2]\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/properties",
@@ -182,15 +81,15 @@
 					"name": "Update Property",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n    \"title\": \"Updated Property\",\n    \"description\": \"Updated property description\",\n    \"price\": 150000,\n    \"location\": \"Updated Location\",\n    \"property_type_id\": 2,\n    \"purpose_type_id\": 2,\n    \"furniture_type_id\": 2,\n    \"condition_id\": 2,\n    \"utilities\": [2, 3],\n    \"amenities\": [2, 3]\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/properties/:id",
@@ -229,9 +128,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/v1/properties",
+							"raw": "{{base_url}}/api/v1/properties?page=1&page_size=10",
 							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "properties"]
+							"path": ["api", "v1", "properties"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								}
+							]
 						}
 					}
 				}
@@ -252,6 +161,11 @@
 									"key": "image",
 									"type": "file",
 									"src": []
+								},
+								{
+									"key": "is_primary",
+									"value": "false",
+									"type": "text"
 								}
 							]
 						},
@@ -408,15 +322,15 @@
 					"name": "Register User",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"John Doe\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/users/register",
@@ -429,15 +343,15 @@
 					"name": "Login User",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/users/login",
@@ -453,8 +367,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
+								"value": "Bearer {{token}}"
 							}
 						],
 						"url": {
@@ -470,19 +383,17 @@
 						"method": "PUT",
 						"header": [
 							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
 								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
+								"value": "Bearer {{token}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"updated@example.com\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/users/profile",
@@ -497,19 +408,17 @@
 						"method": "PUT",
 						"header": [
 							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
 								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
+								"value": "Bearer {{token}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"current_password\": \"oldpassword\",\n    \"new_password\": \"newpassword\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n    \"current_password\": \"oldpassword123\",\n    \"new_password\": \"newpassword123\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/users/password",
@@ -529,19 +438,17 @@
 						"method": "POST",
 						"header": [
 							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
 								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
+								"value": "Bearer {{token}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"property_id\": \"property_id_here\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"raw": "{\n    \"property_id\": 1\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/favorites",
@@ -557,8 +464,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
+								"value": "Bearer {{token}}"
 							}
 						],
 						"url": {
@@ -581,8 +487,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer {{token}}",
-								"type": "text"
+								"value": "Bearer {{token}}"
 							}
 						],
 						"url": {
@@ -602,7 +507,7 @@
 		},
 		{
 			"key": "token",
-			"value": "your_jwt_token_here"
+			"value": "your-auth-token"
 		}
 	]
 } 
