@@ -41,7 +41,7 @@ func CreatePropertyService(requestID string, transactionDB *gorm.DB) *PropertySe
 }
 
 // Create creates a new property
-func (service *PropertyService) Create(request dto.PropertyRequest) (response *dto.PropertyResponse, errResult *custom.ErrorResult) {
+func (service *PropertyService) Create(request dto.PropertyRequest) (response *dto.Property, errResult *custom.ErrorResult) {
 	commonLogFields := log.CommonLogField(service.serviceContext.RequestID)
 	log.Logger.Debug(log.TraceMsgFuncStart(PropertyServiceCreateMethod), log.TraceMethodInputs(commonLogFields, request)...)
 
@@ -85,7 +85,7 @@ func (service *PropertyService) Create(request dto.PropertyRequest) (response *d
 }
 
 // GetByID retrieves a property by ID
-func (service *PropertyService) GetByID(propertyID uint) (response dto.PropertyResponse, errResult *custom.ErrorResult) {
+func (service *PropertyService) GetByID(propertyID uint) (response dto.Property, errResult *custom.ErrorResult) {
 	commonLogFields := log.CommonLogField(service.serviceContext.RequestID)
 	log.Logger.Debug(log.TraceMsgFuncStart(PropertyServiceGetByIDMethod), log.TraceMethodInputs(commonLogFields, propertyID)...)
 
@@ -99,18 +99,18 @@ func (service *PropertyService) GetByID(propertyID uint) (response dto.PropertyR
 	}()
 
 	service.propertyRepo = repository.CreatePropertyRepository(service.serviceContext.RequestID)
-	response, err := service.propertyRepo.GetByID(propertyID)
+	property, err := service.propertyRepo.GetByID(propertyID)
 	if err != nil {
 		logFields := log.TraceError(commonLogFields, err)
 		log.Logger.Error(log.TraceMsgErrorOccurredFrom(repository.PropertyRepositoryGetByIDMethod), logFields...)
 		return response, buildSelectErrFromRepo("property", err)
 	}
 
-	return response, nil
+	return property, nil
 }
 
 // Update updates a property
-func (service *PropertyService) Update(propertyID uint, request dto.PropertyRequest) (response dto.PropertyResponse, errResult *custom.ErrorResult) {
+func (service *PropertyService) Update(propertyID uint, request dto.PropertyRequest) (response dto.Property, errResult *custom.ErrorResult) {
 	commonLogFields := log.CommonLogField(service.serviceContext.RequestID)
 	log.Logger.Debug(log.TraceMsgFuncStart(PropertyServiceUpdateMethod), log.TraceMethodInputs(commonLogFields, propertyID, request)...)
 
@@ -131,18 +131,18 @@ func (service *PropertyService) Update(propertyID uint, request dto.PropertyRequ
 		return response, buildSelectErrFromRepo("property", err)
 	}
 
-	response, err = service.propertyRepo.GetByID(propertyID)
+	property, err := service.propertyRepo.GetByID(propertyID)
 	if err != nil {
 		logFields := log.TraceError(commonLogFields, err)
 		log.Logger.Error(log.TraceMsgErrorOccurredFrom(repository.PropertyRepositoryGetByIDMethod), logFields...)
 		return response, buildSelectErrFromRepo("property", err)
 	}
 
-	return response, nil
+	return property, nil
 }
 
 // Delete deletes a property
-func (service *PropertyService) Delete(propertyID uint) (response dto.PropertyResponse, errResult *custom.ErrorResult) {
+func (service *PropertyService) Delete(propertyID uint) (response dto.Property, errResult *custom.ErrorResult) {
 	commonLogFields := log.CommonLogField(service.serviceContext.RequestID)
 	log.Logger.Debug(log.TraceMsgFuncStart(PropertyServiceDeleteMethod), log.TraceMethodInputs(commonLogFields, propertyID)...)
 
@@ -156,7 +156,7 @@ func (service *PropertyService) Delete(propertyID uint) (response dto.PropertyRe
 	}()
 
 	service.propertyRepo = repository.CreatePropertyRepository(service.serviceContext.RequestID)
-	response, err := service.propertyRepo.GetByID(propertyID)
+	property, err := service.propertyRepo.GetByID(propertyID)
 	if err != nil {
 		logFields := log.TraceError(commonLogFields, err)
 		log.Logger.Error(log.TraceMsgErrorOccurredFrom(repository.PropertyRepositoryGetByIDMethod), logFields...)
@@ -170,11 +170,11 @@ func (service *PropertyService) Delete(propertyID uint) (response dto.PropertyRe
 		return response, buildSelectErrFromRepo("property", err)
 	}
 
-	return response, nil
+	return property, nil
 }
 
 // List lists properties with pagination
-func (service *PropertyService) List(offset, limit int) (response []dto.PropertyResponse, errResult *custom.ErrorResult) {
+func (service *PropertyService) List(offset, limit int) (response []dto.Property, errResult *custom.ErrorResult) {
 	commonLogFields := log.CommonLogField(service.serviceContext.RequestID)
 	log.Logger.Debug(log.TraceMsgFuncStart(PropertyServiceListMethod), log.TraceMethodInputs(commonLogFields, offset, limit)...)
 

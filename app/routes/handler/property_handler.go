@@ -43,7 +43,7 @@ func HandleCreateProperty(ctx *fiber.Ctx) error {
 		errorResult     *custom.ErrorResult
 		errRes          custom.ErrorResult
 		request         dto.PropertyRequest
-		response        *dto.PropertyResponse
+		response        *dto.Property
 		propertyService = services.CreatePropertyService(requestID, nil)
 	)
 
@@ -96,7 +96,7 @@ func HandleGetProperty(ctx *fiber.Ctx) error {
 		statusCode      int = fiber.StatusOK
 		errorResult     *custom.ErrorResult
 		errRes          custom.ErrorResult
-		response        dto.PropertyResponse
+		response        dto.Property
 		propertyService = services.CreatePropertyService(requestID, nil)
 	)
 
@@ -150,7 +150,7 @@ func HandleUpdateProperty(ctx *fiber.Ctx) error {
 		errorResult     *custom.ErrorResult
 		errRes          custom.ErrorResult
 		request         dto.PropertyRequest
-		response        dto.PropertyResponse
+		response        dto.Property
 		propertyService = services.CreatePropertyService(requestID, nil)
 	)
 
@@ -210,15 +210,14 @@ func HandleDeleteProperty(ctx *fiber.Ctx) error {
 		statusCode      int
 		errorResult     *custom.ErrorResult
 		errRes          custom.ErrorResult
-		response        dto.PropertyResponse
+		response        dto.Property
 		propertyService = services.CreatePropertyService(requestID, nil)
 	)
 
-	propertyID := ctx.QueryInt("id")
-	if propertyID <= 0 {
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(HandleDeletePropertyMethod), commonLogFields...)
-		errRes := custom.BuildBadReqErrResult(constant.BindingErrorCode, constant.InvalidRequestErrorMessage, "Invalid property ID")
-		errorResult = &errRes
+	propertyID, err := GetIDFromParams(ctx)
+	if err != nil {
+		log.Logger.Error(log.TraceMsgErrorOccurredFrom(HandleGetPropertyMethod), commonLogFields...)
+		errorResult = err
 		statusCode, errRes = HandleError(errorResult)
 	} else {
 		response, errorResult = propertyService.Delete(uint(propertyID))
@@ -263,7 +262,7 @@ func HandleListProperties(ctx *fiber.Ctx) error {
 		statusCode      int
 		errorResult     *custom.ErrorResult
 		errRes          custom.ErrorResult
-		response        []dto.PropertyResponse
+		response        []dto.Property
 		propertyService = services.CreatePropertyService(requestID, nil)
 	)
 

@@ -20,10 +20,10 @@ const (
 
 type PropertyRepository interface {
 	Create(request dto.PropertyRequest) (uint, error)
-	GetByID(id uint) (dto.PropertyResponse, error)
+	GetByID(id uint) (dto.Property, error)
 	Update(id uint, request dto.PropertyRequest) error
 	Delete(id uint) error
-	List(offset, limit int) ([]dto.PropertyResponse, error)
+	List(offset, limit int) ([]dto.Property, error)
 	CheckExists(id uint) (bool, error)
 }
 
@@ -453,7 +453,7 @@ func (r *propertyRepository) Create(request dto.PropertyRequest) (uint, error) {
 	return property.ID, nil
 }
 
-func (r *propertyRepository) GetByID(id uint) (dto.PropertyResponse, error) {
+func (r *propertyRepository) GetByID(id uint) (dto.Property, error) {
 	commonLogFields := log.CommonLogField(r.repositoryContext.RequestID)
 	log.Logger.Debug(log.TraceMsgFuncStart(PropertyRepositoryGetByIDMethod), log.TraceMethodInputs(commonLogFields, id)...)
 	defer log.Logger.Debug(log.TraceMsgFuncEnd(PropertyRepositoryGetByIDMethod), commonLogFields...)
@@ -465,56 +465,11 @@ func (r *propertyRepository) GetByID(id uint) (dto.PropertyResponse, error) {
 
 	if err != nil {
 		log.Logger.Error(log.TraceMsgErrorOccurredWhenSelecting("Property"), log.TraceError(commonLogFields, err)...)
-		return dto.PropertyResponse{}, err
+		return dto.Property{}, err
 	}
 
-	amenities := make([]int, len(property.PropertyAmenities))
-	for i, amenity := range property.PropertyAmenities {
-		amenities[i] = int(amenity.AmenityID)
-	}
-
-	utilities := make([]int, len(property.PropertyUtilities))
-	for i, utility := range property.PropertyUtilities {
-		utilities[i] = int(utility.UtilityID)
-	}
-
-	images := make([]string, len(property.PropertyImages))
-	for i, image := range property.PropertyImages {
-		images[i] = image.URL
-	}
-
-	response := dto.PropertyResponse{
-		ID:              property.ID,
-		UserID:          property.UserID,
-		Title:           property.Title,
-		Description:     property.Description,
-		PurposeID:       int(property.PurposeID),
-		PropertyTypeID:  int(property.PropertyTypeID),
-		FurnitureTypeID: int(property.FurnitureTypeID),
-		ConditionID:     int(property.ConditionID),
-		Bedrooms:        property.Bedrooms,
-		Bathrooms:       property.Bathrooms,
-		Size:            property.Size,
-		SizeUnit:        property.SizeUnit,
-		City:            property.City,
-		Address:         property.Address,
-		PostalCode:      property.PostalCode,
-		Latitude:        property.Latitude,
-		Longitude:       property.Longitude,
-		Price:           property.Price,
-		PriceUnit:       property.PriceUnit,
-		IsNegotiable:    property.IsNegotiable,
-		RentalPeriod:    property.RentalPeriod,
-		IsRefundable:    property.IsRefundable,
-		PricingType:     property.PricingType,
-		CreatedAt:       property.CreatedAt,
-		Amenities:       amenities,
-		Utilities:       utilities,
-		Images:          images,
-	}
-
-	log.Logger.Debug(log.TraceMsgFuncEnd(PropertyRepositoryGetByIDMethod), log.TraceMethodOutputWithErr(commonLogFields, response, err)...)
-	return response, nil
+	log.Logger.Debug(log.TraceMsgFuncEnd(PropertyRepositoryGetByIDMethod), log.TraceMethodOutputWithErr(commonLogFields, property, err)...)
+	return property, nil
 }
 
 func (r *propertyRepository) Update(id uint, request dto.PropertyRequest) error {
@@ -601,7 +556,7 @@ func (r *propertyRepository) Delete(id uint) error {
 	return nil
 }
 
-func (r *propertyRepository) List(offset, limit int) ([]dto.PropertyResponse, error) {
+func (r *propertyRepository) List(offset, limit int) ([]dto.Property, error) {
 	commonLogFields := log.CommonLogField(r.repositoryContext.RequestID)
 	log.Logger.Debug(log.TraceMsgFuncStart(PropertyRepositoryListMethod), log.TraceMethodInputs(commonLogFields, offset, limit)...)
 	defer log.Logger.Debug(log.TraceMsgFuncEnd(PropertyRepositoryListMethod), commonLogFields...)
@@ -618,56 +573,8 @@ func (r *propertyRepository) List(offset, limit int) ([]dto.PropertyResponse, er
 		return nil, err
 	}
 
-	responses := make([]dto.PropertyResponse, len(properties))
-	for i, property := range properties {
-		amenities := make([]int, len(property.PropertyAmenities))
-		for j, amenity := range property.PropertyAmenities {
-			amenities[j] = int(amenity.AmenityID)
-		}
-
-		utilities := make([]int, len(property.PropertyUtilities))
-		for j, utility := range property.PropertyUtilities {
-			utilities[j] = int(utility.UtilityID)
-		}
-
-		images := make([]string, len(property.PropertyImages))
-		for j, image := range property.PropertyImages {
-			images[j] = image.URL
-		}
-
-		responses[i] = dto.PropertyResponse{
-			ID:              property.ID,
-			UserID:          property.UserID,
-			Title:           property.Title,
-			Description:     property.Description,
-			PurposeID:       int(property.PurposeID),
-			PropertyTypeID:  int(property.PropertyTypeID),
-			FurnitureTypeID: int(property.FurnitureTypeID),
-			ConditionID:     int(property.ConditionID),
-			Bedrooms:        property.Bedrooms,
-			Bathrooms:       property.Bathrooms,
-			Size:            property.Size,
-			SizeUnit:        property.SizeUnit,
-			City:            property.City,
-			Address:         property.Address,
-			PostalCode:      property.PostalCode,
-			Latitude:        property.Latitude,
-			Longitude:       property.Longitude,
-			Price:           property.Price,
-			PriceUnit:       property.PriceUnit,
-			IsNegotiable:    property.IsNegotiable,
-			RentalPeriod:    property.RentalPeriod,
-			IsRefundable:    property.IsRefundable,
-			PricingType:     property.PricingType,
-			CreatedAt:       property.CreatedAt,
-			Amenities:       amenities,
-			Utilities:       utilities,
-			Images:          images,
-		}
-	}
-
-	log.Logger.Debug(log.TraceMsgFuncEnd(PropertyRepositoryListMethod), log.TraceMethodOutputWithErr(commonLogFields, responses, err)...)
-	return responses, nil
+	log.Logger.Debug(log.TraceMsgFuncEnd(PropertyRepositoryListMethod), log.TraceMethodOutputWithErr(commonLogFields, properties, err)...)
+	return properties, nil
 }
 
 func (r *propertyRepository) CheckExists(id uint) (bool, error) {
