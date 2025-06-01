@@ -14,11 +14,12 @@ import (
 
 const (
 	// Property service methods
-	PropertyServiceCreateMethod  = "PropertyServiceCreate"
-	PropertyServiceGetByIDMethod = "PropertyServiceGetByID"
-	PropertyServiceUpdateMethod  = "PropertyServiceUpdate"
-	PropertyServiceDeleteMethod  = "PropertyServiceDelete"
-	PropertyServiceListMethod    = "PropertyServiceList"
+	PropertyServiceCreateMethod       = "PropertyServiceCreate"
+	PropertyServiceGetByIDMethod      = "PropertyServiceGetByID"
+	PropertyServiceUpdateMethod       = "PropertyServiceUpdate"
+	PropertyServiceDeleteMethod       = "PropertyServiceDelete"
+	PropertyServiceListMethod         = "PropertyServiceList"
+	PropertyServiceListByUserIDMethod = "PropertyServiceListByUserID"
 )
 
 // PropertyService defines the interface for property service methods.
@@ -189,6 +190,31 @@ func (service *PropertyService) List(offset, limit int) (response []dto.Property
 
 	service.propertyRepo = repository.CreatePropertyRepository(service.serviceContext.RequestID)
 	properties, err := service.propertyRepo.List(offset, limit)
+	if err != nil {
+		logFields := log.TraceError(commonLogFields, err)
+		log.Logger.Error(log.TraceMsgErrorOccurredFrom(repository.PropertyRepositoryListMethod), logFields...)
+		return nil, buildSelectErrFromRepo("properties", err)
+	}
+
+	return properties, nil
+}
+
+// ListByUserID lists properties for a specific user with pagination
+func (service *PropertyService) ListByUserID(userID uint, offset, limit int) (response []dto.Property, errResult *custom.ErrorResult) {
+	commonLogFields := log.CommonLogField(service.serviceContext.RequestID)
+	log.Logger.Debug(log.TraceMsgFuncStart(PropertyServiceListByUserIDMethod), log.TraceMethodInputs(commonLogFields, userID, offset, limit)...)
+
+	defer func() {
+		// Panic handling
+		if r := recover(); r != nil {
+			log.Logger.Error(constant.PanicOccurred, log.TraceStack(commonLogFields, debug.Stack())...)
+			errResult = buildPanicErr(PropertyServiceListByUserIDMethod)
+		}
+		log.Logger.Debug(log.TraceMsgFuncEnd(PropertyServiceListByUserIDMethod), log.TraceMethodOutputs(commonLogFields, response, errResult)...)
+	}()
+
+	service.propertyRepo = repository.CreatePropertyRepository(service.serviceContext.RequestID)
+	properties, err := service.propertyRepo.ListByUserID(userID, offset, limit)
 	if err != nil {
 		logFields := log.TraceError(commonLogFields, err)
 		log.Logger.Error(log.TraceMsgErrorOccurredFrom(repository.PropertyRepositoryListMethod), logFields...)

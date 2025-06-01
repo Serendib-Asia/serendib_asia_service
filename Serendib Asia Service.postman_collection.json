@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"_postman_id": "ace5a185-fb23-43ca-aaff-e51a14b81502",
 		"name": "Serendib Asia Service",
 		"description": "API collection for Serendib Asia Service",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "38024694"
 	},
 	"item": [
 		{
@@ -23,18 +24,7 @@
 							"mode": "raw",
 							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"John Doe\",\n    \"phone_number\": \"+1234567890\",\n    \"profile_image\": \"https://example.com/profile.jpg\"\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/auth/register",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"auth",
-								"register"
-							]
-						},
+						"url": "{{base_url}}/api/v1/auth/register",
 						"description": "Register a new user"
 					},
 					"response": [
@@ -52,18 +42,7 @@
 									"mode": "raw",
 									"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"John Doe\",\n    \"phone_number\": \"+1234567890\",\n    \"profile_image\": \"https://example.com/profile.jpg\"\n}"
 								},
-								"url": {
-									"raw": "{{base_url}}/api/v1/auth/register",
-									"host": [
-										"{{base_url}}"
-									],
-									"path": [
-										"api",
-										"v1",
-										"auth",
-										"register"
-									]
-								}
+								"url": "{{base_url}}/api/v1/auth/register"
 							},
 							"status": "Created",
 							"code": 201,
@@ -93,11 +72,7 @@
 							"mode": "raw",
 							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/users/login",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "users", "login"]
-						},
+						"url": "{{base_url}}/api/v1/users/login",
 						"description": "Login with user credentials"
 					},
 					"response": [
@@ -110,11 +85,7 @@
 									"mode": "raw",
 									"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}"
 								},
-								"url": {
-									"raw": "{{base_url}}/api/v1/users/login",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "users", "login"]
-								}
+								"url": "{{base_url}}/api/v1/users/login"
 							},
 							"status": "OK",
 							"code": 200,
@@ -140,11 +111,7 @@
 								"value": "Bearer {{auth_token}}"
 							}
 						],
-						"url": {
-							"raw": "{{base_url}}/api/v1/users/profile",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "users", "profile"]
-						},
+						"url": "{{base_url}}/api/v1/users/profile",
 						"description": "Get user profile information"
 					},
 					"response": [
@@ -158,11 +125,7 @@
 										"value": "Bearer {{auth_token}}"
 									}
 								],
-								"url": {
-									"raw": "{{base_url}}/api/v1/users/profile",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "users", "profile"]
-								}
+								"url": "{{base_url}}/api/v1/users/profile"
 							},
 							"status": "OK",
 							"code": 200,
@@ -196,11 +159,7 @@
 							"mode": "raw",
 							"raw": "{\n    \"full_name\": \"John Updated\",\n    \"phone_number\": \"+1234567890\",\n    \"profile_image\": \"https://example.com/profile.jpg\"\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/users/profile",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "users", "profile"]
-						},
+						"url": "{{base_url}}/api/v1/users/profile",
 						"description": "Update user profile information"
 					},
 					"response": [
@@ -222,11 +181,7 @@
 									"mode": "raw",
 									"raw": "{\n    \"full_name\": \"John Updated\",\n    \"phone_number\": \"+1234567890\",\n    \"profile_image\": \"https://example.com/profile.jpg\"\n}"
 								},
-								"url": {
-									"raw": "{{base_url}}/api/v1/users/profile",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "users", "profile"]
-								}
+								"url": "{{base_url}}/api/v1/users/profile"
 							},
 							"status": "OK",
 							"code": 200,
@@ -260,11 +215,7 @@
 							"mode": "raw",
 							"raw": "{\n    \"current_password\": \"password123\",\n    \"new_password\": \"newpassword123\"\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/users/password",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "users", "password"]
-						},
+						"url": "{{base_url}}/api/v1/users/password",
 						"description": "Update user password"
 					},
 					"response": [
@@ -286,11 +237,7 @@
 									"mode": "raw",
 									"raw": "{\n    \"current_password\": \"password123\",\n    \"new_password\": \"newpassword123\"\n}"
 								},
-								"url": {
-									"raw": "{{base_url}}/api/v1/users/password",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "users", "password"]
-								}
+								"url": "{{base_url}}/api/v1/users/password"
 							},
 							"status": "OK",
 							"code": 200,
@@ -327,13 +274,9 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"user_id\": 1,\n    \"title\": \"Luxury Villa\",\n    \"description\": \"Beautiful villa with ocean view\",\n    \"purpose_id\": 1,\n    \"property_type_id\": 1,\n    \"furniture_type_id\": 1,\n    \"condition_id\": 1,\n    \"bedrooms\": 3,\n    \"bathrooms\": 2,\n    \"size\": 2000,\n    \"size_unit\": \"sqft\",\n    \"city\": \"Colombo\",\n    \"address\": \"123 Main St\",\n    \"postal_code\": \"00100\",\n    \"latitude\": 6.9271,\n    \"longitude\": 79.8612,\n    \"price\": 500000,\n    \"price_unit\": \"USD\",\n    \"is_negotiable\": true,\n    \"rental_period\": \"monthly\",\n    \"is_refundable\": true,\n    \"pricing_type\": \"sell\",\n    \"amenity_ids\": [1, 2, 3],\n    \"utility_ids\": [1, 2, 3],\n    \"images\": [\n        \"https://example.com/image1.jpg\",\n        \"https://example.com/image2.jpg\",\n        \"https://example.com/image3.jpg\"\n    ]\n}"
+							"raw": "{\n    \"user_id\": 1,\n    \"title\": \"Luxury Villa 6\",\n    \"description\": \"Beautiful villa with ocean view\",\n    \"purpose_id\": 1,\n    \"property_type_id\": 1,\n    \"furniture_type_id\": 1,\n    \"condition_id\": 1,\n    \"bedrooms\": 3,\n    \"bathrooms\": 2,\n    \"size\": 2000,\n    \"size_unit\": \"sqft\",\n    \"city\": \"Colombo\",\n    \"address\": \"123 Main St\",\n    \"postal_code\": \"00100\",\n    \"latitude\": 6.9271,\n    \"longitude\": 79.8612,\n    \"price\": 500000,\n    \"price_unit\": \"USD\",\n    \"is_negotiable\": true,\n    \"rental_period\": \"monthly\",\n    \"is_refundable\": true,\n    \"pricing_type\": \"sell\",\n    \"amenity_ids\": [1, 2, 3],\n    \"utility_ids\": [1, 2, 3],\n    \"images\": [\n        \"https://example.com/image1.jpg\",\n        \"https://example.com/image2.jpg\",\n        \"https://example.com/image3.jpg\"\n    ]\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/properties",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "properties"]
-						},
+						"url": "{{base_url}}/api/v1/properties",
 						"description": "Create a new property listing"
 					},
 					"response": [
@@ -355,11 +298,7 @@
 									"mode": "raw",
 									"raw": "{\n    \"user_id\": 1,\n    \"title\": \"Luxury Villa\",\n    \"description\": \"Beautiful villa with ocean view\",\n    \"purpose_id\": 1,\n    \"property_type_id\": 1,\n    \"furniture_type_id\": 1,\n    \"condition_id\": 1,\n    \"bedrooms\": 3,\n    \"bathrooms\": 2,\n    \"size\": 2000,\n    \"size_unit\": \"sqft\",\n    \"city\": \"Colombo\",\n    \"address\": \"123 Main St\",\n    \"postal_code\": \"00100\",\n    \"latitude\": 6.9271,\n    \"longitude\": 79.8612,\n    \"price\": 500000,\n    \"price_unit\": \"USD\",\n    \"is_negotiable\": true,\n    \"rental_period\": \"monthly\",\n    \"is_refundable\": true,\n    \"pricing_type\": \"sell\",\n    \"amenity_ids\": [1, 2, 3],\n    \"utility_ids\": [1, 2, 3],\n    \"images\": [\n        \"https://example.com/image1.jpg\",\n        \"https://example.com/image2.jpg\",\n        \"https://example.com/image3.jpg\"\n    ]\n}"
 								},
-								"url": {
-									"raw": "{{base_url}}/api/v1/properties",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "properties"]
-								}
+								"url": "{{base_url}}/api/v1/properties"
 							},
 							"status": "Created",
 							"code": 201,
@@ -379,17 +318,8 @@
 					"name": "Get Property",
 					"request": {
 						"method": "GET",
-						"url": {
-							"raw": "{{base_url}}/api/v1/properties/:id",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "properties", ":id"],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1"
-								}
-							]
-						},
+						"header": [],
+						"url": "{{base_url}}/api/v1/properties/1",
 						"description": "Get property details by ID"
 					},
 					"response": [
@@ -397,11 +327,8 @@
 							"name": "Success Response",
 							"originalRequest": {
 								"method": "GET",
-								"url": {
-									"raw": "{{base_url}}/api/v1/properties/1",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "properties", "1"]
-								}
+								"header": [],
+								"url": "{{base_url}}/api/v1/properties/1"
 							},
 							"status": "OK",
 							"code": 200,
@@ -433,19 +360,9 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Updated Luxury Villa\",\n    \"description\": \"Updated description\",\n    \"price\": 550000,\n    \"is_negotiable\": false,\n    \"amenity_ids\": [1, 2, 3, 4],\n    \"utility_ids\": [1, 2, 3, 4]\n}"
+							"raw": "{\n    \"title\": \"Updated Luxury Villa\",\n    \"description\": \"Updated description\",\n    \"price\": 550000,\n    \"is_negotiable\": false,\n    \"amenity_ids\": [1, 2, 3,4],\n    \"utility_ids\": [1, 2, 3, 4],\n     \"images\": [\n        \"https://example.com/image1.jpg\",\n        \"https://example.com/image2.jpg\",\n        \"https://example.com/image3.jpg\"\n    ]\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/properties/:id",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "properties", ":id"],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1"
-								}
-							]
-						},
+						"url": "{{base_url}}/api/v1/properties/1",
 						"description": "Update property details"
 					},
 					"response": [
@@ -467,11 +384,7 @@
 									"mode": "raw",
 									"raw": "{\n    \"title\": \"Updated Luxury Villa\",\n    \"description\": \"Updated description\",\n    \"price\": 550000,\n    \"is_negotiable\": false,\n    \"amenity_ids\": [1, 2, 3, 4],\n    \"utility_ids\": [1, 2, 3, 4]\n}"
 								},
-								"url": {
-									"raw": "{{base_url}}/api/v1/properties/1",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "properties", "1"]
-								}
+								"url": "{{base_url}}/api/v1/properties/1"
 							},
 							"status": "OK",
 							"code": 200,
@@ -497,17 +410,7 @@
 								"value": "Bearer {{auth_token}}"
 							}
 						],
-						"url": {
-							"raw": "{{base_url}}/api/v1/properties/:id",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "properties", ":id"],
-							"variable": [
-								{
-									"key": "id",
-									"value": "1"
-								}
-							]
-						},
+						"url": "{{base_url}}/api/v1/properties/1",
 						"description": "Delete a property"
 					},
 					"response": [
@@ -521,11 +424,7 @@
 										"value": "Bearer {{auth_token}}"
 									}
 								],
-								"url": {
-									"raw": "{{base_url}}/api/v1/properties/1",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "properties", "1"]
-								}
+								"url": "{{base_url}}/api/v1/properties/1"
 							},
 							"status": "OK",
 							"code": 200,
@@ -545,18 +444,27 @@
 					"name": "List Properties",
 					"request": {
 						"method": "GET",
+						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/v1/properties?page=1&limit=10",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "properties"],
+							"raw": "{{base_url}}/api/v1/properties",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"properties"
+							],
 							"query": [
 								{
 									"key": "page",
-									"value": "1"
+									"value": "1",
+									"disabled": true
 								},
 								{
 									"key": "limit",
-									"value": "10"
+									"value": "10",
+									"disabled": true
 								}
 							]
 						},
@@ -567,10 +475,17 @@
 							"name": "Success Response",
 							"originalRequest": {
 								"method": "GET",
+								"header": [],
 								"url": {
 									"raw": "{{base_url}}/api/v1/properties?page=1&limit=10",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "properties"],
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"properties"
+									],
 									"query": [
 										{
 											"key": "page",
@@ -596,6 +511,43 @@
 							"body": "[\n    {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"title\": \"Luxury Villa\",\n        \"description\": \"Beautiful villa with ocean view\",\n        \"purpose_id\": 1,\n        \"property_type_id\": 1,\n        \"furniture_type_id\": 1,\n        \"condition_id\": 1,\n        \"bedrooms\": 3,\n        \"bathrooms\": 2,\n        \"size\": 2000,\n        \"size_unit\": \"sqft\",\n        \"city\": \"Colombo\",\n        \"address\": \"123 Main St\",\n        \"postal_code\": \"00100\",\n        \"latitude\": 6.9271,\n        \"longitude\": 79.8612,\n        \"price\": 500000,\n        \"price_unit\": \"USD\",\n        \"is_negotiable\": true,\n        \"rental_period\": \"monthly\",\n        \"is_refundable\": true,\n        \"pricing_type\": \"sell\",\n        \"created_at\": \"2024-03-19T10:00:00Z\",\n        \"amenities\": [1, 2, 3],\n        \"utilities\": [1, 2, 3],\n        \"images\": [\n            \"https://example.com/image1.jpg\",\n            \"https://example.com/image2.jpg\"\n        ]\n    }\n]"
 						}
 					]
+				},
+				{
+					"name": "List Properties By User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/properties/user/1?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"properties",
+								"user",
+								"1"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "List properties for the authenticated user"
+					},
+					"response": []
 				}
 			]
 		},
@@ -622,8 +574,16 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/properties/:id/images",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "properties", ":id", "images"],
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"properties",
+								":id",
+								"images"
+							],
 							"variable": [
 								{
 									"key": "id",
@@ -652,11 +612,7 @@
 									"mode": "raw",
 									"raw": "{\n    \"url\": \"https://example.com/property-image.jpg\",\n    \"is_primary\": true\n}"
 								},
-								"url": {
-									"raw": "{{base_url}}/api/v1/properties/1/images",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "properties", "1", "images"]
-								}
+								"url": "{{base_url}}/api/v1/properties/1/images"
 							},
 							"status": "Created",
 							"code": 201,
@@ -676,10 +632,19 @@
 					"name": "Get Property Images",
 					"request": {
 						"method": "GET",
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/v1/properties/:id/images",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "properties", ":id", "images"],
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"properties",
+								":id",
+								"images"
+							],
 							"variable": [
 								{
 									"key": "id",
@@ -694,11 +659,8 @@
 							"name": "Success Response",
 							"originalRequest": {
 								"method": "GET",
-								"url": {
-									"raw": "{{base_url}}/api/v1/properties/1/images",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "properties", "1", "images"]
-								}
+								"header": [],
+								"url": "{{base_url}}/api/v1/properties/1/images"
 							},
 							"status": "OK",
 							"code": 200,
@@ -726,8 +688,17 @@
 						],
 						"url": {
 							"raw": "{{base_url}}/api/v1/properties/:id/images/:image_id",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "properties", ":id", "images", ":image_id"],
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"properties",
+								":id",
+								"images",
+								":image_id"
+							],
 							"variable": [
 								{
 									"key": "id",
@@ -752,11 +723,7 @@
 										"value": "Bearer {{auth_token}}"
 									}
 								],
-								"url": {
-									"raw": "{{base_url}}/api/v1/properties/1/images/1",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "properties", "1", "images", "1"]
-								}
+								"url": "{{base_url}}/api/v1/properties/1/images/1"
 							},
 							"status": "OK",
 							"code": 200,
@@ -781,11 +748,8 @@
 					"name": "Get Purpose Types",
 					"request": {
 						"method": "GET",
-						"url": {
-							"raw": "{{base_url}}/api/v1/lookups/purpose-types",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "lookups", "purpose-types"]
-						},
+						"header": [],
+						"url": "{{base_url}}/api/v1/lookups/purpose-types",
 						"description": "Get all purpose types"
 					},
 					"response": [
@@ -793,11 +757,8 @@
 							"name": "Success Response",
 							"originalRequest": {
 								"method": "GET",
-								"url": {
-									"raw": "{{base_url}}/api/v1/lookups/purpose-types",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "lookups", "purpose-types"]
-								}
+								"header": [],
+								"url": "{{base_url}}/api/v1/lookups/purpose-types"
 							},
 							"status": "OK",
 							"code": 200,
@@ -817,11 +778,8 @@
 					"name": "Get Property Types",
 					"request": {
 						"method": "GET",
-						"url": {
-							"raw": "{{base_url}}/api/v1/lookups/property-types",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "lookups", "property-types"]
-						},
+						"header": [],
+						"url": "{{base_url}}/api/v1/lookups/property-types",
 						"description": "Get all property types"
 					},
 					"response": [
@@ -829,11 +787,8 @@
 							"name": "Success Response",
 							"originalRequest": {
 								"method": "GET",
-								"url": {
-									"raw": "{{base_url}}/api/v1/lookups/property-types",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "lookups", "property-types"]
-								}
+								"header": [],
+								"url": "{{base_url}}/api/v1/lookups/property-types"
 							},
 							"status": "OK",
 							"code": 200,
@@ -853,11 +808,8 @@
 					"name": "Get Furniture Types",
 					"request": {
 						"method": "GET",
-						"url": {
-							"raw": "{{base_url}}/api/v1/lookups/furniture-types",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "lookups", "furniture-types"]
-						},
+						"header": [],
+						"url": "{{base_url}}/api/v1/lookups/furniture-types",
 						"description": "Get all furniture types"
 					},
 					"response": [
@@ -865,11 +817,8 @@
 							"name": "Success Response",
 							"originalRequest": {
 								"method": "GET",
-								"url": {
-									"raw": "{{base_url}}/api/v1/lookups/furniture-types",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "lookups", "furniture-types"]
-								}
+								"header": [],
+								"url": "{{base_url}}/api/v1/lookups/furniture-types"
 							},
 							"status": "OK",
 							"code": 200,
@@ -889,11 +838,8 @@
 					"name": "Get Property Conditions",
 					"request": {
 						"method": "GET",
-						"url": {
-							"raw": "{{base_url}}/api/v1/lookups/property-conditions",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "lookups", "property-conditions"]
-						},
+						"header": [],
+						"url": "{{base_url}}/api/v1/lookups/conditions",
 						"description": "Get all property conditions"
 					},
 					"response": [
@@ -901,11 +847,8 @@
 							"name": "Success Response",
 							"originalRequest": {
 								"method": "GET",
-								"url": {
-									"raw": "{{base_url}}/api/v1/lookups/property-conditions",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "lookups", "property-conditions"]
-								}
+								"header": [],
+								"url": "{{base_url}}/api/v1/lookups/property-conditions"
 							},
 							"status": "OK",
 							"code": 200,
@@ -925,11 +868,8 @@
 					"name": "Get Utilities",
 					"request": {
 						"method": "GET",
-						"url": {
-							"raw": "{{base_url}}/api/v1/lookups/utilities",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "lookups", "utilities"]
-						},
+						"header": [],
+						"url": "{{base_url}}/api/v1/lookups/utilities",
 						"description": "Get all utilities"
 					},
 					"response": [
@@ -937,11 +877,8 @@
 							"name": "Success Response",
 							"originalRequest": {
 								"method": "GET",
-								"url": {
-									"raw": "{{base_url}}/api/v1/lookups/utilities",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "lookups", "utilities"]
-								}
+								"header": [],
+								"url": "{{base_url}}/api/v1/lookups/utilities"
 							},
 							"status": "OK",
 							"code": 200,
@@ -961,11 +898,8 @@
 					"name": "Get Amenities",
 					"request": {
 						"method": "GET",
-						"url": {
-							"raw": "{{base_url}}/api/v1/lookups/amenities",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "lookups", "amenities"]
-						},
+						"header": [],
+						"url": "{{base_url}}/api/v1/lookups/amenities",
 						"description": "Get all amenities"
 					},
 					"response": [
@@ -973,11 +907,8 @@
 							"name": "Success Response",
 							"originalRequest": {
 								"method": "GET",
-								"url": {
-									"raw": "{{base_url}}/api/v1/lookups/amenities",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "lookups", "amenities"]
-								}
+								"header": [],
+								"url": "{{base_url}}/api/v1/lookups/amenities"
 							},
 							"status": "OK",
 							"code": 200,
@@ -1016,11 +947,7 @@
 							"mode": "raw",
 							"raw": "{\n    \"property_id\": 1\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/favorites",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "favorites"]
-						},
+						"url": "{{base_url}}/api/v1/favorites",
 						"description": "Add a property to favorites"
 					},
 					"response": [
@@ -1042,11 +969,7 @@
 									"mode": "raw",
 									"raw": "{\n    \"property_id\": 1\n}"
 								},
-								"url": {
-									"raw": "{{base_url}}/api/v1/favorites",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "favorites"]
-								}
+								"url": "{{base_url}}/api/v1/favorites"
 							},
 							"status": "Created",
 							"code": 201,
@@ -1080,11 +1003,7 @@
 							"mode": "raw",
 							"raw": "{\n    \"property_id\": 1\n}"
 						},
-						"url": {
-							"raw": "{{base_url}}/api/v1/favorites",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "favorites"]
-						},
+						"url": "{{base_url}}/api/v1/favorites",
 						"description": "Remove a property from favorites"
 					},
 					"response": [
@@ -1106,11 +1025,7 @@
 									"mode": "raw",
 									"raw": "{\n    \"property_id\": 1\n}"
 								},
-								"url": {
-									"raw": "{{base_url}}/api/v1/favorites",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "favorites"]
-								}
+								"url": "{{base_url}}/api/v1/favorites"
 							},
 							"status": "OK",
 							"code": 200,
@@ -1138,8 +1053,14 @@
 						],
 						"url": {
 							"raw": "{{base_url}}/api/v1/favorites?page=1&limit=10",
-							"host": ["{{base_url}}"],
-							"path": ["api", "v1", "favorites"],
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"favorites"
+							],
 							"query": [
 								{
 									"key": "page",
@@ -1166,8 +1087,14 @@
 								],
 								"url": {
 									"raw": "{{base_url}}/api/v1/favorites?page=1&limit=10",
-									"host": ["{{base_url}}"],
-									"path": ["api", "v1", "favorites"],
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"favorites"
+									],
 									"query": [
 										{
 											"key": "page",
@@ -1202,14 +1129,18 @@
 			"listen": "prerequest",
 			"script": {
 				"type": "text/javascript",
-				"exec": [""]
+				"exec": [
+					""
+				]
 			}
 		},
 		{
 			"listen": "test",
 			"script": {
 				"type": "text/javascript",
-				"exec": [""]
+				"exec": [
+					""
+				]
 			}
 		}
 	],
@@ -1225,4 +1156,4 @@
 			"type": "string"
 		}
 	]
-} 
+}

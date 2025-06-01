@@ -25,6 +25,7 @@ type PropertyRepository interface {
 	Delete(id uint) error
 	List(offset, limit int) ([]dto.Property, error)
 	CheckExists(id uint) (bool, error)
+	ListByUserID(userID uint, offset, limit int) ([]dto.Property, error)
 }
 
 type propertyRepository struct {
@@ -590,4 +591,26 @@ func (r *propertyRepository) CheckExists(id uint) (bool, error) {
 	}
 
 	return count > 0, nil
+}
+
+func (r *propertyRepository) ListByUserID(userID uint, offset, limit int) ([]dto.Property, error) {
+	commonLogFields := log.CommonLogField(r.repositoryContext.RequestID)
+	log.Logger.Debug(log.TraceMsgFuncStart(PropertyRepositoryListMethod), log.TraceMethodInputs(commonLogFields, userID, offset, limit)...)
+	defer log.Logger.Debug(log.TraceMsgFuncEnd(PropertyRepositoryListMethod), commonLogFields...)
+
+	var properties []dto.Property
+	err := r.db.Preload("PropertyAmenities").Preload("PropertyUtilities").Preload("PropertyImages").
+		Where("user_id = ?", userID).
+		Order("created_at DESC").
+		Offset(offset).
+		Limit(limit).
+		Find(&properties).Error
+
+	if err != nil {
+		log.Logger.Error(log.TraceMsgErrorOccurredWhenSelecting("Property"), log.TraceError(commonLogFields, err)...)
+		return nil, err
+	}
+
+	log.Logger.Debug(log.TraceMsgFuncEnd(PropertyRepositoryListMethod), log.TraceMethodOutputWithErr(commonLogFields, properties, err)...)
+	return properties, nil
 }

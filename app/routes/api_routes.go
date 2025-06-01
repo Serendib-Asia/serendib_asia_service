@@ -25,6 +25,7 @@ func APIRoutes(app *fiber.App) {
 	property.Put("/:id", handler.HandleUpdateProperty)
 	property.Delete("/:id", handler.HandleDeleteProperty)
 	property.Get("/", handler.HandleListProperties)
+	property.Get("/user/:id", handler.HandleListPropertiesByUser)
 
 	// property image routes
 	property.Post("/:propertyId/images", handler.HandleUploadImage)

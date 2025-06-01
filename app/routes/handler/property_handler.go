@@ -14,11 +14,12 @@ import (
 
 const (
 	// Property handler methods
-	HandleCreatePropertyMethod = "HandleCreateProperty"
-	HandleGetPropertyMethod    = "HandleGetProperty"
-	HandleUpdatePropertyMethod = "HandleUpdateProperty"
-	HandleDeletePropertyMethod = "HandleDeleteProperty"
-	HandleListPropertiesMethod = "HandleListProperties"
+	HandleCreatePropertyMethod       = "HandleCreateProperty"
+	HandleGetPropertyMethod          = "HandleGetProperty"
+	HandleUpdatePropertyMethod       = "HandleUpdateProperty"
+	HandleDeletePropertyMethod       = "HandleDeleteProperty"
+	HandleListPropertiesMethod       = "HandleListProperties"
+	HandleListPropertiesByUserMethod = "HandleListPropertiesByUser"
 )
 
 // HandleCreateProperty handles the creation of a new property
@@ -274,6 +275,63 @@ func HandleListProperties(ctx *fiber.Ctx) error {
 		logFields := log.TraceCustomError(commonLogFields, *errorResult)
 		log.Logger.Error(log.TraceMsgErrorOccurredFrom(services.PropertyServiceListMethod), logFields...)
 		statusCode, errRes = HandleError(errorResult)
+	}
+
+	responseBuilder := responsebuilder.APIResponse{
+		Ctx:           ctx,
+		HTTPStatus:    statusCode,
+		ErrorResponse: errRes,
+		Response:      response,
+		RequestID:     requestID,
+	}
+	responseBuilder.BuildAPIResponse()
+
+	return nil
+}
+
+// HandleListPropertiesByUser handles listing properties for a specific user
+// @Summary List properties by user
+// @Description Lists properties for a specific user with pagination
+// @Tags properties
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number"
+// @Param page_size query int false "Page size"
+// @Success 200 {object} []dto.PropertyResponse
+// @Failure 400 {object} custom.ErrorResult
+// @Failure 500 {object} custom.ErrorResult
+// @Router /api/properties/user [get]
+func HandleListPropertiesByUser(ctx *fiber.Ctx) error {
+	requestID := web.GetRequestID(ctx)
+	commonLogFields := log.CommonLogField(requestID)
+	log.Logger.Info(log.TraceMsgFuncStart(HandleListPropertiesByUserMethod), commonLogFields...)
+	defer log.Logger.Info(log.TraceMsgFuncEnd(HandleListPropertiesByUserMethod), commonLogFields...)
+
+	var (
+		statusCode      int
+		errorResult     *custom.ErrorResult
+		errRes          custom.ErrorResult
+		response        []dto.Property
+		propertyService = services.CreatePropertyService(requestID, nil)
+	)
+
+	// Get user ID from context
+	userID, err := GetIDFromParams(ctx)
+	if err != nil {
+		log.Logger.Error(log.TraceMsgErrorOccurredFrom(HandleListPropertiesByUserMethod), commonLogFields...)
+		errorResult = err
+		statusCode, errRes = HandleError(errorResult)
+	} else {
+		page := ctx.QueryInt("page", 1)
+		pageSize := ctx.QueryInt("limit", 10)
+		offset := (page - 1) * pageSize
+
+		response, errorResult = propertyService.ListByUserID(userID, offset, pageSize)
+		if errorResult != nil {
+			logFields := log.TraceCustomError(commonLogFields, *errorResult)
+			log.Logger.Error(log.TraceMsgErrorOccurredFrom(services.PropertyServiceListByUserIDMethod), logFields...)
+			statusCode, errRes = HandleError(errorResult)
+		}
 	}
 
 	responseBuilder := responsebuilder.APIResponse{
