@@ -145,287 +145,269 @@ func (r *propertyRepository) mapRequestToProperty(request dto.PropertyRequest) d
 	}
 }
 
-// updatePropertyAmenities updates amenities for a property
-func (r *propertyRepository) updatePropertyAmenities(tx *gorm.DB, propertyID uint, amenityIDs []int) error {
-	commonLogFields := log.CommonLogField(r.repositoryContext.RequestID)
+// updateRelatedEntities is a generic function to update related entities with soft delete support
+func updateRelatedEntities[T any, K comparable](
+	tx *gorm.DB,
+	propertyID uint,
+	newIDs []K,
+	getExisting func(tx *gorm.DB, propertyID uint) ([]T, error),
+	compareKey func(T) K,
+	isDeleted func(T) bool,
+	createNew func(K) T,
+	deleteWhere func(*gorm.DB, []K) *gorm.DB,
+	entityName string,
+	requestID string,
+	extraOps ...func(tx *gorm.DB, newIDs []K) error,
+) error {
+	commonLogFields := log.CommonLogField(requestID)
 
-	// Remove duplicates from amenityIDs
-	uniqueAmenityIDs := make(map[int]bool)
-	var uniqueIDs []int
-	for _, id := range amenityIDs {
-		if !uniqueAmenityIDs[id] {
-			uniqueAmenityIDs[id] = true
+	// Remove duplicates from newIDs
+	uniqueIDsMap := make(map[K]bool)
+	var uniqueIDs []K
+	for _, id := range newIDs {
+		if !uniqueIDsMap[id] {
+			uniqueIDsMap[id] = true
 			uniqueIDs = append(uniqueIDs, id)
 		}
 	}
 
-	// Get existing amenities including soft deleted ones
-	var existingAmenities []dto.PropertyAmenity
-	if err := tx.Unscoped().Where(&dto.PropertyAmenity{PropertyID: propertyID}).Find(&existingAmenities).Error; err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredWhenSelecting("PropertyAmenity"), log.TraceError(commonLogFields, err)...)
+	// Get existing entities including soft-deleted
+	existing, err := getExisting(tx, propertyID)
+	if err != nil {
+		log.Logger.Error(log.TraceMsgErrorOccurredWhenSelecting(entityName), log.TraceError(commonLogFields, err)...)
 		return err
 	}
 
-	// Create maps for easier lookup
-	existingMap := make(map[uint]bool)
-	softDeletedMap := make(map[uint]bool)
-	for _, amenity := range existingAmenities {
-		if amenity.DeletedAt.Valid {
-			softDeletedMap[amenity.AmenityID] = true
+	// Create maps for existing and soft-deleted entities
+	existingMap := make(map[K]bool)
+	softDeletedMap := make(map[K]bool)
+	for _, entity := range existing {
+		key := compareKey(entity)
+		if isDeleted(entity) {
+			softDeletedMap[key] = true
 		} else {
-			existingMap[amenity.AmenityID] = true
+			existingMap[key] = true
 		}
 	}
 
-	// Find amenities to add, reactivate, or deactivate
-	var toAdd []dto.PropertyAmenity
-	toReactivate := make(map[uint]bool)
-	toDeactivate := make(map[uint]bool)
-
-	// Check which amenities need to be added or reactivated
+	// Determine entities to add, reactivate, or deactivate
+	var toAdd []T
+	var toReactivate []K
 	for _, id := range uniqueIDs {
-		if !existingMap[uint(id)] {
-			if softDeletedMap[uint(id)] {
-				// Reactivate soft deleted amenity
-				toReactivate[uint(id)] = true
+		if !existingMap[id] {
+			if softDeletedMap[id] {
+				// Mark for reactivation
+				toReactivate = append(toReactivate, id)
 			} else {
-				// Add new amenity
-				toAdd = append(toAdd, dto.PropertyAmenity{
-					PropertyID: propertyID,
-					AmenityID:  uint(id),
-				})
+				// Add new entity
+				toAdd = append(toAdd, createNew(id))
 			}
 		}
 	}
 
-	// Check which amenities need to be deactivated
-	for _, existing := range existingAmenities {
-		if !existing.DeletedAt.Valid { // Only check non-deleted amenities
+	// Determine entities to deactivate
+	var toDeactivate []K
+	for _, entity := range existing {
+		key := compareKey(entity)
+		if !isDeleted(entity) { // Only check non-deleted entities
 			found := false
 			for _, id := range uniqueIDs {
-				if uint(id) == existing.AmenityID {
+				if id == key {
 					found = true
 					break
 				}
 			}
 			if !found {
-				toDeactivate[existing.AmenityID] = true
+				toDeactivate = append(toDeactivate, key)
 			}
 		}
 	}
 
-	// First, deactivate amenities that are no longer needed
+	// Deactivate entities (soft delete)
 	if len(toDeactivate) > 0 {
-		amenityIDsToDeactivate := make([]uint, 0, len(toDeactivate))
-		for id := range toDeactivate {
-			amenityIDsToDeactivate = append(amenityIDsToDeactivate, id)
-		}
-		if err := tx.Where(&dto.PropertyAmenity{PropertyID: propertyID}).Where("amenity_id IN ?", amenityIDsToDeactivate).Delete(&dto.PropertyAmenity{}).Error; err != nil {
-			log.Logger.Error(log.TraceMsgErrorOccurredWhenDeleting("PropertyAmenity"), log.TraceError(commonLogFields, err)...)
+		if err := deleteWhere(tx.Model(new(T)), toDeactivate).Delete(new(T)).Error; err != nil {
+			log.Logger.Error(log.TraceMsgErrorOccurredWhenDeleting(entityName), log.TraceError(commonLogFields, err)...)
 			return err
 		}
 	}
 
-	// Then, reactivate soft deleted amenities
+	// Reactivate soft-deleted entities
 	if len(toReactivate) > 0 {
-		amenityIDsToReactivate := make([]uint, 0, len(toReactivate))
-		for id := range toReactivate {
-			amenityIDsToReactivate = append(amenityIDsToReactivate, id)
-		}
-		if err := tx.Unscoped().Model(&dto.PropertyAmenity{}).
-			Where(&dto.PropertyAmenity{PropertyID: propertyID}).
-			Where("amenity_id IN ?", amenityIDsToReactivate).
+		if err := deleteWhere(tx.Unscoped().Model(new(T)), toReactivate).
 			Update("deleted_at", nil).Error; err != nil {
-			log.Logger.Error(log.TraceMsgErrorOccurredWhenUpdating("PropertyAmenity"), log.TraceError(commonLogFields, err)...)
+			log.Logger.Error(log.TraceMsgErrorOccurredWhenUpdating(entityName), log.TraceError(commonLogFields, err)...)
 			return err
 		}
 	}
 
-	// Finally, add new amenities one by one to handle potential duplicates
-	for _, amenity := range toAdd {
-		// Check if the record already exists
-		var count int64
-		if err := tx.Model(&dto.PropertyAmenity{}).
-			Where(&dto.PropertyAmenity{
-				PropertyID: propertyID,
-				AmenityID:  amenity.AmenityID,
-			}).Count(&count).Error; err != nil {
-			log.Logger.Error(log.TraceMsgErrorOccurredWhenSelecting("PropertyAmenity"), log.TraceError(commonLogFields, err)...)
+	// Add new entities
+	if len(toAdd) > 0 {
+		if err := tx.Model(new(T)).Create(&toAdd).Error; err != nil {
+			log.Logger.Error(log.TraceMsgErrorOccurredWhenInserting(entityName), log.TraceError(commonLogFields, err)...)
 			return err
 		}
+	}
 
-		// Only insert if it doesn't exist
-		if count == 0 {
-			if err := tx.Create(&amenity).Error; err != nil {
-				log.Logger.Error(log.TraceMsgErrorOccurredWhenInserting("PropertyAmenity"), log.TraceError(commonLogFields, err)...)
-				return err
-			}
+	// Execute extra operations (e.g., for images)
+	for _, op := range extraOps {
+		if err := op(tx, newIDs); err != nil {
+			return err
 		}
 	}
 
 	return nil
+}
+
+// updatePropertyAmenities updates amenities for a property
+func (r *propertyRepository) updatePropertyAmenities(tx *gorm.DB, propertyID uint, amenityIDs []int) error {
+	getExisting := func(tx *gorm.DB, propertyID uint) ([]dto.PropertyAmenity, error) {
+		var existing []dto.PropertyAmenity
+		err := tx.Unscoped().Where(&dto.PropertyAmenity{PropertyID: propertyID}).Find(&existing).Error
+		return existing, err
+	}
+
+	compareKey := func(a dto.PropertyAmenity) int {
+		return int(a.AmenityID)
+	}
+
+	isDeleted := func(a dto.PropertyAmenity) bool {
+		return a.DeletedAt.Valid
+	}
+
+	createNew := func(id int) dto.PropertyAmenity {
+		return dto.PropertyAmenity{
+			PropertyID: propertyID,
+			AmenityID:  uint(id),
+		}
+	}
+
+	deleteWhere := func(tx *gorm.DB, ids []int) *gorm.DB {
+		uintIDs := make([]uint, len(ids))
+		for i, id := range ids {
+			uintIDs[i] = uint(id)
+		}
+		return tx.Where(&dto.PropertyAmenity{PropertyID: propertyID}).Where("amenity_id IN ?", uintIDs)
+	}
+
+	return updateRelatedEntities(
+		tx,
+		propertyID,
+		amenityIDs,
+		getExisting,
+		compareKey,
+		isDeleted,
+		createNew,
+		deleteWhere,
+		"PropertyAmenity",
+		r.repositoryContext.RequestID,
+	)
 }
 
 // updatePropertyUtilities updates utilities for a property
 func (r *propertyRepository) updatePropertyUtilities(tx *gorm.DB, propertyID uint, utilityIDs []int) error {
-	commonLogFields := log.CommonLogField(r.repositoryContext.RequestID)
+	getExisting := func(tx *gorm.DB, propertyID uint) ([]dto.PropertyUtility, error) {
+		var existing []dto.PropertyUtility
+		err := tx.Unscoped().Where(&dto.PropertyUtility{PropertyID: propertyID}).Find(&existing).Error
+		return existing, err
+	}
 
-	// Remove duplicates from utilityIDs
-	uniqueUtilityIDs := make(map[int]bool)
-	var uniqueIDs []int
-	for _, id := range utilityIDs {
-		if !uniqueUtilityIDs[id] {
-			uniqueUtilityIDs[id] = true
-			uniqueIDs = append(uniqueIDs, id)
+	compareKey := func(u dto.PropertyUtility) int {
+		return int(u.UtilityID)
+	}
+
+	isDeleted := func(u dto.PropertyUtility) bool {
+		return u.DeletedAt.Valid
+	}
+
+	createNew := func(id int) dto.PropertyUtility {
+		return dto.PropertyUtility{
+			PropertyID: propertyID,
+			UtilityID:  uint(id),
 		}
 	}
 
-	// Get existing utilities
-	var existingUtilities []dto.PropertyUtility
-	if err := tx.Where(&dto.PropertyUtility{PropertyID: propertyID}).Find(&existingUtilities).Error; err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredWhenSelecting("PropertyUtility"), log.TraceError(commonLogFields, err)...)
-		return err
+	deleteWhere := func(tx *gorm.DB, ids []int) *gorm.DB {
+		uintIDs := make([]uint, len(ids))
+		for i, id := range ids {
+			uintIDs[i] = uint(id)
+		}
+		return tx.Where(&dto.PropertyUtility{PropertyID: propertyID}).Where("utility_id IN ?", uintIDs)
 	}
 
-	// Create maps for easier lookup
-	existingMap := make(map[uint]bool)
-	for _, utility := range existingUtilities {
-		existingMap[utility.UtilityID] = true
-	}
-
-	// Find utilities to add and remove
-	var toAdd []dto.PropertyUtility
-	toRemove := make(map[uint]bool)
-
-	// Check which utilities need to be added
-	for _, id := range uniqueIDs {
-		if !existingMap[uint(id)] {
-			toAdd = append(toAdd, dto.PropertyUtility{
-				PropertyID: propertyID,
-				UtilityID:  uint(id),
-			})
-		}
-	}
-
-	// Check which utilities need to be removed
-	for _, existing := range existingUtilities {
-		found := false
-		for _, id := range uniqueIDs {
-			if uint(id) == existing.UtilityID {
-				found = true
-				break
-			}
-		}
-		if !found {
-			toRemove[existing.UtilityID] = true
-		}
-	}
-
-	// Remove utilities that are no longer needed
-	if len(toRemove) > 0 {
-		utilityIDsToRemove := make([]uint, 0, len(toRemove))
-		for id := range toRemove {
-			utilityIDsToRemove = append(utilityIDsToRemove, id)
-		}
-		if err := tx.Where(&dto.PropertyUtility{PropertyID: propertyID}).Where("utility_id IN ?", utilityIDsToRemove).Delete(&dto.PropertyUtility{}).Error; err != nil {
-			log.Logger.Error(log.TraceMsgErrorOccurredWhenDeleting("PropertyUtility"), log.TraceError(commonLogFields, err)...)
-			return err
-		}
-	}
-
-	// Add new utilities
-	if len(toAdd) > 0 {
-		if err := tx.Create(&toAdd).Error; err != nil {
-			log.Logger.Error(log.TraceMsgErrorOccurredWhenInserting("PropertyUtility"), log.TraceError(commonLogFields, err)...)
-			return err
-		}
-	}
-
-	return nil
+	return updateRelatedEntities(
+		tx,
+		propertyID,
+		utilityIDs,
+		getExisting,
+		compareKey,
+		isDeleted,
+		createNew,
+		deleteWhere,
+		"PropertyUtility",
+		r.repositoryContext.RequestID,
+	)
 }
 
 // updatePropertyImages updates images for a property
 func (r *propertyRepository) updatePropertyImages(tx *gorm.DB, propertyID uint, imageURLs []string) error {
-	commonLogFields := log.CommonLogField(r.repositoryContext.RequestID)
-
-	// Get existing images
-	var existingImages []dto.PropertyImage
-	if err := tx.Where(&dto.PropertyImage{PropertyID: propertyID}).Find(&existingImages).Error; err != nil {
-		log.Logger.Error(log.TraceMsgErrorOccurredWhenSelecting("PropertyImage"), log.TraceError(commonLogFields, err)...)
-		return err
+	getExisting := func(tx *gorm.DB, propertyID uint) ([]dto.PropertyImage, error) {
+		var existing []dto.PropertyImage
+		err := tx.Unscoped().Where(&dto.PropertyImage{PropertyID: propertyID}).Find(&existing).Error
+		return existing, err
 	}
 
-	// Create maps for easier lookup
-	existingMap := make(map[string]bool)
-	for _, image := range existingImages {
-		existingMap[image.URL] = true
+	compareKey := func(i dto.PropertyImage) string {
+		return i.URL
 	}
 
-	// Find images to add and remove
-	var toAdd []dto.PropertyImage
-	toRemove := make(map[string]bool)
+	isDeleted := func(i dto.PropertyImage) bool {
+		return i.DeletedAt.Valid
+	}
 
-	// Check which images need to be added
-	for i, url := range imageURLs {
-		if !existingMap[url] {
-			toAdd = append(toAdd, dto.PropertyImage{
-				PropertyID: propertyID,
-				URL:        url,
-				IsPrimary:  i == 0, // Set the first image as primary
-			})
+	createNew := func(url string) dto.PropertyImage {
+		return dto.PropertyImage{
+			PropertyID: propertyID,
+			URL:        url,
+			IsPrimary:  false, // Will be updated in extraOps
 		}
 	}
 
-	// Check which images need to be removed
-	for _, existing := range existingImages {
-		found := false
-		for _, url := range imageURLs {
-			if url == existing.URL {
-				found = true
-				break
+	deleteWhere := func(tx *gorm.DB, urls []string) *gorm.DB {
+		return tx.Where(&dto.PropertyImage{PropertyID: propertyID}).Where("url IN ?", urls)
+	}
+
+	extraOps := []func(tx *gorm.DB, newURLs []string) error{
+		func(tx *gorm.DB, newURLs []string) error {
+			if len(newURLs) == 0 {
+				return nil
 			}
-		}
-		if !found {
-			toRemove[existing.URL] = true
-		}
+			// Reset all images to non-primary
+			if err := tx.Model(&dto.PropertyImage{}).Where(&dto.PropertyImage{PropertyID: propertyID}).Update("is_primary", false).Error; err != nil {
+				log.Logger.Error(log.TraceMsgErrorOccurredWhenUpdating("PropertyImage"), log.TraceError(log.CommonLogField(r.repositoryContext.RequestID), err)...)
+				return err
+			}
+			// Set the first image as primary
+			if err := tx.Model(&dto.PropertyImage{}).Where(&dto.PropertyImage{PropertyID: propertyID, URL: newURLs[0]}).Update("is_primary", true).Error; err != nil {
+				log.Logger.Error(log.TraceMsgErrorOccurredWhenUpdating("PropertyImage"), log.TraceError(log.CommonLogField(r.repositoryContext.RequestID), err)...)
+				return err
+			}
+			return nil
+		},
 	}
 
-	// Remove images that are no longer needed
-	if len(toRemove) > 0 {
-		urlsToRemove := make([]string, 0, len(toRemove))
-		for url := range toRemove {
-			urlsToRemove = append(urlsToRemove, url)
-		}
-		if err := tx.Where(&dto.PropertyImage{PropertyID: propertyID}).Where("url IN ?", urlsToRemove).Delete(&dto.PropertyImage{}).Error; err != nil {
-			log.Logger.Error(log.TraceMsgErrorOccurredWhenDeleting("PropertyImage"), log.TraceError(commonLogFields, err)...)
-			return err
-		}
-	}
-
-	// Add new images
-	if len(toAdd) > 0 {
-		if err := tx.Create(&toAdd).Error; err != nil {
-			log.Logger.Error(log.TraceMsgErrorOccurredWhenInserting("PropertyImage"), log.TraceError(commonLogFields, err)...)
-			return err
-		}
-	}
-
-	// Update primary image if needed
-	if len(imageURLs) > 0 {
-		// Reset all images to non-primary
-		if err := tx.Model(&dto.PropertyImage{}).Where(&dto.PropertyImage{PropertyID: propertyID}).Update("is_primary", false).Error; err != nil {
-			log.Logger.Error(log.TraceMsgErrorOccurredWhenUpdating("PropertyImage"), log.TraceError(commonLogFields, err)...)
-			return err
-		}
-
-		// Set the first image as primary
-		if err := tx.Model(&dto.PropertyImage{}).Where(&dto.PropertyImage{PropertyID: propertyID, URL: imageURLs[0]}).Update("is_primary", true).Error; err != nil {
-			log.Logger.Error(log.TraceMsgErrorOccurredWhenUpdating("PropertyImage"), log.TraceError(commonLogFields, err)...)
-			return err
-		}
-	}
-
-	return nil
+	return updateRelatedEntities(
+		tx,
+		propertyID,
+		imageURLs,
+		getExisting,
+		compareKey,
+		isDeleted,
+		createNew,
+		deleteWhere,
+		"PropertyImage",
+		r.repositoryContext.RequestID,
+		extraOps...,
+	)
 }
 
 func (r *propertyRepository) Create(request dto.PropertyRequest) (uint, error) {
