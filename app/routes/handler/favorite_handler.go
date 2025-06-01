@@ -76,7 +76,7 @@ func (h *FavoriteHandler) RemoveFavorite(c *fiber.Ctx) error {
 	}
 
 	// Get property ID from params
-	propertyID, err := GetPropertyIDFromParams(c)
+	propertyID, err := GetIDFromParams(c)
 	if err != nil {
 		log.Logger.Error(log.TraceMsgErrorOccurredFrom(FavoriteHandlerRemoveMethod), log.TraceError(commonLogFields, err)...)
 		return c.Status(fiber.StatusBadRequest).JSON(err)

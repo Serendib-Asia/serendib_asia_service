@@ -100,7 +100,7 @@ func HandleGetProperty(ctx *fiber.Ctx) error {
 		propertyService = services.CreatePropertyService(requestID, nil)
 	)
 
-	propertyID, err := GetPropertyIDFromParams(ctx)
+	propertyID, err := GetIDFromParams(ctx)
 	if err != nil {
 		log.Logger.Error(log.TraceMsgErrorOccurredFrom(HandleGetPropertyMethod), commonLogFields...)
 		errorResult = err
@@ -154,24 +154,25 @@ func HandleUpdateProperty(ctx *fiber.Ctx) error {
 		propertyService = services.CreatePropertyService(requestID, nil)
 	)
 
-	propertyID := ctx.QueryInt("id")
-	if propertyID <= 0 {
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(HandleUpdatePropertyMethod), commonLogFields...)
-		errRes := custom.BuildBadReqErrResult(constant.BindingErrorCode, constant.InvalidRequestErrorMessage, "Invalid property ID")
-		errorResult = &errRes
-		statusCode, errRes = HandleError(errorResult)
-	} else if err := ctx.BodyParser(&request); err != nil {
-		logFields := log.TraceError(commonLogFields, err)
-		log.Logger.Error(log.TraceMsgErrorOccurredFrom(HandleUpdatePropertyMethod), logFields...)
-		errRes := custom.BuildBadReqErrResult(constant.BindingErrorCode, constant.InvalidRequestErrorMessage, err.Error())
-		errorResult = &errRes
+	propertyID, err := GetIDFromParams(ctx)
+	if err != nil {
+		log.Logger.Error(log.TraceMsgErrorOccurredFrom(HandleGetPropertyMethod), commonLogFields...)
+		errorResult = err
 		statusCode, errRes = HandleError(errorResult)
 	} else {
-		response, errorResult = propertyService.Update(uint(propertyID), request)
-		if errorResult != nil {
-			logFields := log.TraceCustomError(commonLogFields, *errorResult)
-			log.Logger.Error(log.TraceMsgErrorOccurredFrom(services.PropertyServiceUpdateMethod), logFields...)
+		if err := ctx.BodyParser(&request); err != nil {
+			logFields := log.TraceError(commonLogFields, err)
+			log.Logger.Error(log.TraceMsgErrorOccurredFrom(HandleUpdatePropertyMethod), logFields...)
+			errRes := custom.BuildBadReqErrResult(constant.BindingErrorCode, constant.InvalidRequestErrorMessage, err.Error())
+			errorResult = &errRes
 			statusCode, errRes = HandleError(errorResult)
+		} else {
+			response, errorResult = propertyService.Update(uint(propertyID), request)
+			if errorResult != nil {
+				logFields := log.TraceCustomError(commonLogFields, *errorResult)
+				log.Logger.Error(log.TraceMsgErrorOccurredFrom(services.PropertyServiceUpdateMethod), logFields...)
+				statusCode, errRes = HandleError(errorResult)
+			}
 		}
 	}
 

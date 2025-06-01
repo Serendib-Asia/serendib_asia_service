@@ -31,8 +31,8 @@ func GetUserIDFromContext(c *fiber.Ctx) (uint, *custom.ErrorResult) {
 	return userID, nil
 }
 
-// GetPropertyIDFromParams extracts the property ID from the request parameters
-func GetPropertyIDFromParams(c *fiber.Ctx) (uint, *custom.ErrorResult) {
+// GetIDFromParams extracts the property ID from the request parameters
+func GetIDFromParams(c *fiber.Ctx) (uint, *custom.ErrorResult) {
 	idStr := c.Params("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
