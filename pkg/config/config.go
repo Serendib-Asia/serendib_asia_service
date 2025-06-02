@@ -7,6 +7,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/chazool/serendib_asia_service/pkg/config/firebase"
 	lg "github.com/chazool/serendib_asia_service/pkg/log"
 
 	"github.com/spf13/viper"
@@ -24,7 +25,6 @@ const (
 	SrvListenPort                = "SRV_LISTEN_PORT"
 	ChildFiberProcessIdleTimeout = "CHILD_FIBER_PROCESS_IDLE_TIMEOUT"
 	LogDestination               = "LOG_DESTINATION"
-	AllowedPriorities            = "ALLOWED_PRIORITIES"
 	// log constance
 	LogFileName                 = "LOG_FILE_NAME"
 	LogMaxSizeMb                = "LOG_MAX_SIZE_MB"
@@ -67,10 +67,10 @@ type CommonConfig struct {
 	_ struct{}
 	LogConfig
 	DBConfig
+	FirebaseConfig               firebase.Config
 	ChildFiberProcessIdleTimeout time.Duration
 	SrvListenPort                string
 	Pprofenabled                 bool
-	AllowedPriorities            []string
 }
 
 // LogConfig is a struct that holds the log configuration for the application
@@ -125,10 +125,12 @@ func (config *CommonConfig) setDefaultConfig() {
 	viper.SetDefault(LogLevel, Debug)
 	viper.SetDefault(LogFormat, Console)
 
+	// Set Firebase default config
+	firebase.SetDefaultConfig()
+
 	// you can supply "console" or "File". if json, logging formant is in json
 	viper.SetDefault(LogFileName, JSON)
 	viper.SetDefault(Pprofenabled, "true")
-	viper.SetDefault(AllowedPriorities, DefaultAllowedPriorities)
 }
 
 func (config *CommonConfig) setDefaultDBConfig() {
@@ -154,10 +156,10 @@ func (config *CommonConfig) BuildConfig() *CommonConfig {
 	config = &CommonConfig{
 		LogConfig:                    logConfig,
 		DBConfig:                     config.getDBConfig(),
+		FirebaseConfig:               firebase.GetConfig(),
 		ChildFiberProcessIdleTimeout: viper.GetDuration(ChildFiberProcessIdleTimeout),
 		SrvListenPort:                viper.GetString(SrvListenPort),
 		Pprofenabled:                 viper.GetBool(Pprofenabled),
-		AllowedPriorities:            viper.GetStringSlice(AllowedPriorities),
 	}
 
 	configJSONPresntation, _ := json.Marshal(config)

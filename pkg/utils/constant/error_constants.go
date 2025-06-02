@@ -147,7 +147,6 @@ const (
 	// Service and repository error codes
 	ErrRecordNotFoundCode    = "RECORD_NOT_FOUND"
 	ErrDatabaseCode          = "DATABASE_ERROR"
-	ErrEmptyAuthHeaderCode   = "EMPTY_AUTH_HEADER"
 	ErrTokenSplitToArrayCode = "TOKEN_SPLIT_TO_ARRAY_ERROR"
 
 	// Additional validation error codes
@@ -268,4 +267,12 @@ const (
 	ErrInvalidSigningMethod                = "invalid signing method"
 	ErrOccurredWhenGettingJwtSigningMethod = "error occurred when getting jwt signing method"
 	ErrOccurredWhenSigningJWTToken         = "error occurred when signing jwt token"
+)
+
+// Firebase auth error codes
+const (
+	ErrEmptyAuthHeaderCode   = "AUTH_001"
+	ErrInvalidAuthHeaderCode = "AUTH_002"
+	ErrInvalidTokenCode      = "AUTH_003"
+	ErrInvalidTokenMsg       = "invalid token"
 )

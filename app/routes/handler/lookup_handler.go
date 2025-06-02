@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/chazool/serendib_asia_service/app/routes/dto"
 	"github.com/chazool/serendib_asia_service/app/services"
 	"github.com/chazool/serendib_asia_service/pkg/custom"
 	"github.com/chazool/serendib_asia_service/pkg/log"
@@ -37,7 +38,7 @@ func HandleGetPurposeTypes(ctx *fiber.Ctx) error {
 	var (
 		statusCode    int
 		errRes        custom.ErrorResult
-		response      interface{}
+		response      []dto.LookupResponse
 		lookupService = services.CreateLookupService(requestID, nil)
 	)
 
@@ -78,7 +79,7 @@ func HandleGetPropertyTypes(ctx *fiber.Ctx) error {
 	var (
 		statusCode    int
 		errRes        custom.ErrorResult
-		response      interface{}
+		response      []dto.LookupResponse
 		lookupService = services.CreateLookupService(requestID, nil)
 	)
 
@@ -119,7 +120,7 @@ func HandleGetFurnitureTypes(ctx *fiber.Ctx) error {
 	var (
 		statusCode    int
 		errRes        custom.ErrorResult
-		response      interface{}
+		response      []dto.LookupResponse
 		lookupService = services.CreateLookupService(requestID, nil)
 	)
 
@@ -160,7 +161,7 @@ func HandleGetConditions(ctx *fiber.Ctx) error {
 	var (
 		statusCode    int
 		errRes        custom.ErrorResult
-		response      interface{}
+		response      []dto.LookupResponse
 		lookupService = services.CreateLookupService(requestID, nil)
 	)
 
@@ -201,7 +202,7 @@ func HandleGetUtilities(ctx *fiber.Ctx) error {
 	var (
 		statusCode    int
 		errRes        custom.ErrorResult
-		response      interface{}
+		response      []dto.LookupResponse
 		lookupService = services.CreateLookupService(requestID, nil)
 	)
 
@@ -242,7 +243,7 @@ func HandleGetAmenities(ctx *fiber.Ctx) error {
 	var (
 		statusCode    int
 		errRes        custom.ErrorResult
-		response      interface{}
+		response      []dto.LookupResponse
 		lookupService = services.CreateLookupService(requestID, nil)
 	)
 

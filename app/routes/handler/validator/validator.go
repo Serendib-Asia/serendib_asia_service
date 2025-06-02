@@ -3,7 +3,6 @@ package validator
 import (
 	"github.com/chazool/serendib_asia_service/pkg/log"
 
-	"github.com/chazool/serendib_asia_service/pkg/config"
 	"github.com/chazool/serendib_asia_service/pkg/custom"
 	"github.com/chazool/serendib_asia_service/pkg/utils/constant"
 
@@ -30,16 +29,13 @@ var (
 		string(constant.TimePeriodWeekly),
 		string(constant.TimePeriodDaily),
 	}
-	AllowedSentimentCategories = []string{"overall", "sla", "customer_experience", "efficiency", "churn_risk"}
-	validSortFields            = []string{"incident_id", "start_date", "last_response", "predicted_escalation_date", "escalation_date", "escalation_request_date"}
-	validSortOrders            = []string{"asc", "desc", "ASC", "DESC"}
+	validSortOrders = []string{"asc", "desc", "ASC", "DESC"}
 )
 
 // InitValidator used to initiate go playground validator
 func InitValidator() {
 	validate = validator.New()
 	RegisterTagName()
-	AllowedPriorities = config.GetConfig().AllowedPriorities
 	trans, err = SetTransLatorForStructError(validate)
 	if err != nil {
 		log.Logger.Debug(log.TraceMsgErrorOccurredFrom(constant.ErrInitValidatorMethod), zap.Error(err))

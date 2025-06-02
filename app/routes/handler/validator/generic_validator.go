@@ -72,10 +72,6 @@ func RegisterCustomValidation(validate *validator.Validate) {
 		return trimAndCheckLength(fl.Field().String(), 0)
 	})
 
-	validate.RegisterValidation(oneOfSortFields, func(f1 validator.FieldLevel) bool {
-		return validateOneOf(f1.Field().String(), validSortFields)
-	})
-
 	validate.RegisterValidation(oneOfSortOrders, func(f1 validator.FieldLevel) bool {
 		return validateOneOf(f1.Field().String(), validSortOrders)
 	})
@@ -164,13 +160,6 @@ func RegisterCustomTranslation(validate *validator.Validate, trans ut.Translator
 		return ut.Add(omitEmpty, "{0} can not be empty", true)
 	}, func(ut ut.Translator, fe validator.FieldError) string {
 		t, _ := ut.T(omitEmpty, fe.Field())
-		return t
-	})
-
-	validate.RegisterTranslation(oneOfSortFields, trans, func(ut ut.Translator) error {
-		return ut.Add(oneOfSortFields, fmt.Sprintf("{0} must be one of the valid sorting fields: "+strings.Join(validSortFields, ", ")), true)
-	}, func(ut ut.Translator, fe validator.FieldError) string {
-		t, _ := ut.T(oneOfSortFields, fe.Field())
 		return t
 	})
 
